@@ -4,10 +4,10 @@
 
 typedef struct{
     int singer_id;
-    char singerName;
-    char singerSurname; 
+    char* singerName;
+    char* singerSurname; 
     Song song;
-    int song;
+    char* song;
 }Singer;
 
 typedef struct{
@@ -15,15 +15,16 @@ typedef struct{
     int listenCount;
     Singer singer;
     SongType songtype;
-    int song_type;
-    int singer_name;
+    char* song_type;
+    char* singer_name;
 }Song;
 
 
 typedef struct{
     int songType_id;
-    char songType;
+    char* songType;
 }SongType;
+
 
 
 
