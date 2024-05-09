@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sarki_Ekle.h"
-#include "album_Sanatcisi_Listele.h"
-#include "sarki_AlbumuListele.h"
-#include "album_Ekle.h"
-#include "sanatci_Ekle.h"
+#include "sarki_Ekle.c"
+#include "album_Sanatcisi_Listele.c"
+#include "sarki_Albumu_Listele.c"
+#include "album_Ekle.c"
+#include "sanatci_Ekle.c"
 
 
 void sarkiEkle(); // Fonksiyonların prototipleri deklare edilmektedir.
