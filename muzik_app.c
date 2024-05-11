@@ -8,7 +8,7 @@
 #include "sanatci_Ekle.c"
 
 
-void sarkiEkle(); // Fonksiyonların prototipleri deklare edilmektedir.
+void sarkiEkle(); // Fonksiyonların prototipleri deklare edilmektedirrr.
 void sanatciEkle();
 void albumEkle();
 void sarkiAlbumuListele();
