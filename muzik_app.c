@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX_SIZE 100
 
-void sarkiEkle(); // Fonksiyonların prototipleri deklare edilmektedir.
-void sanatciEkle();
+void sarkiIsle(); // Fonksiyonların prototipleri deklare edilmektedir.
+void sanatciIsle();
 
 struct Sarki // Şarkı yapısı tanımlanmaktadır.
 {
@@ -38,13 +39,13 @@ int main()
             case '1':
                 printf("\n-Sarki Ekleme-\n");
                 printf("----------------\n\n");
-                sarkiEkle();
+                sarkiIsle();
                 printf("\n");
                 break;
             case '2':
                 printf("\n-Sanatci Ekleme-\n");
                 printf("-------------\n\n");
-                sanatciEkle();
+                sanatciIsle();
                 printf("\n");
                 break;
             case '3':
@@ -59,98 +60,124 @@ int main()
     return 0;
 }
 
-void sarkiEkle() // Sisteme şarkı ekleme fonksiyonu.
-{
-    FILE *sarkiPtr;
-    struct Sarki girilenSarki;
-    int karakterSayisi, sarkiNo;
-    int dosyaUzunlugu;
+void sarkiIsle() {
+    char dosyaAdi[] = "veri.txt"; // Dosya adı
+    char veri[MAX_SIZE];
+    int islem;
 
-    sarkiPtr = fopen("sarkilar.txt", "ab+"); // Dosya ekleme ve okuma modunda açılmaktadır.
-    if (sarkiPtr == NULL)
-    {
-        printf("sarkilar.bin Dosyasi Acilamadi...\n");
-        exit(0); // Programdan çıkılmaktadır.
-    }
+    do {
+        printf("\nYapmak istediğiniz işlemi seçin:\n");
+        printf("1 - Şarkı Ekleme\n");
+        printf("2 - Şarkıları Listeleme\n");
+        printf("3 - Çıkış\n");
+        scanf("%d", &islem);
+        getchar(); // Önceki scanf'den kalan newline karakterini al
 
-    fseek(sarkiPtr, 0, SEEK_END); // İmleç dosyanın sonuna konumlandırılır.
-    dosyaUzunlugu = ftell(sarkiPtr); // Dosyanın uzunluğu hesaplanmaktadır.
+        switch (islem) {
+            case 1: // Veri yazma işlemi
+                printf("Bir şarkı girin: ");
+                fgets(veri, MAX_SIZE, stdin); // Kullanıcıdan veri al
 
-    if (dosyaUzunlugu == 0) // Dosya boş ise ilk şarkıya şarkı numarası olarak 1 atanır.
-    {
-        sarkiNo = 1;
-    }
-    else
-    {
-        fseek(sarkiPtr, -sizeof(struct Sarki), SEEK_END); // Dosyanın sonundaki son şarkıyı okur.
-        struct Sarki sonSarki;
-        fread(&sonSarki, sizeof(struct Sarki), 1, sarkiPtr); // Son şarkıyı okur.
-        sarkiNo = sonSarki.sarkiNumarasi + 1; // Yeni şarkı numarası oluşturulmaktadır.
-    }
+                // fgets() fonksiyonuyla okunan verinin sonunda bir satır ataması oluşur,
+                // bunu kaldırmak için '\n' karakterini kaldırıyoruz.
+                if (veri[strlen(veri) - 1] == '\n') 
+                    veri[strlen(veri) - 1] = '\0';
 
-    if (sarkiNo > 100)
-    {
-        printf("Sistemde 100 Sarki Kayitlidir. Yeni Sarki Ekleyemessiniz!\n");
-    }
-    else // Şarkı eklemeye devam etmek için if yapı dışına çıkılır.
-    {
-        printf("Sarki Adini Giriniz:");
-        gets(girilenSarki.sarkiAdi); // Kullanıcıdan şarkı adını alınmaktadır.
-        fflush(stdin);
+                FILE *dosyaYaz = fopen(dosyaAdi, "a"); // Dosyayı ekleme modunda aç
+                if (dosyaYaz == NULL) {
+                    printf("Dosya açma hatası!\n");
+                    exit(EXIT_FAILURE);
+                }
+                fprintf(dosyaYaz, "%s\n", veri); // Veriyi dosyaya yaz ve yeni satır ekle
+                printf("Veri dosyaya yazıldı.\n");
+                fclose(dosyaYaz); // Dosyayı kapat
+                break;
 
-        girilenSarki.sarkiNumarasi = sarkiNo; // Şarkı numarası atanır.
-        printf("Sarki %d Sisteme Eklenmistir!\n", sarkiNo);
+            case 2: // Veri okuma işlemi
+                FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
+                if (dosyaOku == NULL) {
+                    printf("Dosya açma hatası!\n");
+                    exit(EXIT_FAILURE);
+                }
+                while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku
+                    printf("\nVeri dosyasındaki veriler:%s", veri); // Veriyi ekrana yaz
+                }
+                if (!feof(dosyaOku)) { // Dosya sonuna gelinmediyse
+                    printf("Dosya okuma hatası!\n");
+                    exit(EXIT_FAILURE);
+                }
+                fclose(dosyaOku); // Dosyayı kapat
+                break;
 
-        fwrite(&girilenSarki, sizeof(struct Sarki), 1, sarkiPtr); // Şarkı dosyaya yazılır.
-    }
+            case 3: // Çıkış
+                printf("Programdan çıkılıyor...\n");
+                exit(EXIT_SUCCESS);
+                break;
 
-    fclose(sarkiPtr); // Dosya kapatılmaktadır.
+            default:
+                printf("Geçersiz işlem!\n");
+                break;
+        }
+    } while (islem != 3);
 }
 
-void sanatciEkle() // Sisteme sanatçı ekleme fonksiyonu.
-{
-    FILE *sanatciPtr;
-    struct Sanatci girilenSanatci;
-    int karakterSayisi, sanatciNo;
-    int dosyaUzunlugu;
+void sanatciIsle() {
+    char dosyaAdi[] = "veri.txt"; // Dosya adı
+    char veri[MAX_SIZE];
+    int islem;
 
-    sanatciPtr = fopen("sanatcilar.txt", "ab+"); // Dosya ekleme ve okuma modunda açılmaktadır.
-    if (sanatciPtr == NULL)
-    {
-        printf("sanatcilar.bin Dosyasi Acilamadi...\n");
-        exit(0); // Programdan çıkılmaktadır.
-    }
+    do {
+        printf("\nYapmak istediğiniz işlemi seçin:\n");
+        printf("1 - Sanatçı Ekleme\n");
+        printf("2 - Sanatçı Listeleme\n");
+        printf("3 - Çıkış\n");
+        scanf("%d", &islem);
+        getchar(); // Önceki scanf'den kalan newline karakterini al
 
-    fseek(sanatciPtr, 0, SEEK_END); // İmleç dosyanın sonuna konumlandırılır.
-    dosyaUzunlugu = ftell(sanatciPtr); // Dosyanın uzunluğu hesaplanmaktadır.
+        switch (islem) {
+            case 1: // Veri yazma işlemi
+                printf("Bir sanatçı girin: ");
+                fgets(veri, MAX_SIZE, stdin); // Kullanıcıdan veri al
 
-    if (dosyaUzunlugu == 0) // Dosya boş ise ilk sanatçı numarası 1 olur.
-    {
-        sanatciNo = 1;
-    }
-    else
-    {
-        fseek(sanatciPtr, -sizeof(struct Sanatci), SEEK_END); // Dosyanın sonundaki son sanatçıyı okur.
-        struct Sanatci sonSanatci;
-        fread(&sonSanatci, sizeof(struct Sanatci), 1, sanatciPtr); // Son sanatçıyı okur.
-	    sanatciNo = sonSanatci.sanatciNumarasi + 1; // Yeni sanatçı numarası oluşturulmaktadır.
-    }
+                // fgets() fonksiyonuyla okunan verinin sonunda bir satır ataması oluşur,
+                // bunu kaldırmak için '\n' karakterini kaldırıyoruz.
+                if (veri[strlen(veri) - 1] == '\n') 
+                    veri[strlen(veri) - 1] = '\0';
 
-    if (sanatciNo > 100)
-    {
-        printf("Sistemde 100 Sanatci Kayitlidir. Yeni Sanatci Ekleyemessiniz!\n");
-    }
-    else // Sanatçı eklemeye devam etmek için else dışına çıkılır.
-    {
-        printf("Sanatci Adini Giriniz:");
-        gets(girilenSanatci.sanatciAdi); // Kullanıcıdan sanatçı adı alınmaktadır.
-        fflush(stdin);
+                FILE *dosyaYaz = fopen(dosyaAdi, "a"); // Dosyayı ekleme modunda aç
+                if (dosyaYaz == NULL) {
+                    printf("Dosya açma hatası!\n");
+                    exit(EXIT_FAILURE);
+                }
+                fprintf(dosyaYaz, "%s\n", veri); // Veriyi dosyaya yaz ve yeni satır ekle
+                printf("Veri dosyaya yazıldı.\n");
+                fclose(dosyaYaz); // Dosyayı kapat
+                break;
 
-        girilenSanatci.sanatciNumarasi = sanatciNo; // Sanatçı numarası atanır.
-        printf("Sanatci %d Sisteme Eklenmistir!\n", sanatciNo);
+            case 2: // Veri okuma işlemi
+                FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
+                if (dosyaOku == NULL) {
+                    printf("Dosya açma hatası!\n");
+                    exit(EXIT_FAILURE);
+                }
+                while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku
+                    printf("\nVeri dosyasındaki veriler:%s", veri); // Veriyi ekrana yaz
+                }
+                if (!feof(dosyaOku)) { // Dosya sonuna gelinmediyse
+                    printf("Dosya okuma hatası!\n");
+                    exit(EXIT_FAILURE);
+                }
+                fclose(dosyaOku); // Dosyayı kapat
+                break;
 
-        fwrite(&girilenSanatci, sizeof(struct Sanatci), 1, sanatciPtr); // Sanatçı dosyaya yazılır.
-    }
+            case 3: // Çıkış
+                printf("Programdan çıkılıyor...\n");
+                exit(EXIT_SUCCESS);
+                break;
 
-    fclose(sanatciPtr); // Dosya kapatılmaktadır.
+            default:
+                printf("Geçersiz işlem!\n");
+                break;
+        }
+    } while (islem != 3);
 }
