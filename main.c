@@ -5,22 +5,22 @@
 #define MAX_SIZE 100
 
 // Verileri dosyaya yazan ve dosyadan okuyan fonksiyon
-void sanatciIsle() {
+void veriIsle() {
     char dosyaAdi[] = "veri.txt"; // Dosya adı
     char veri[MAX_SIZE];
     int islem;
 
     do {
         printf("\nYapmak istediginiz islemi secin:\n");
-        printf("1 - Sanatçı Ekleme\n");
-        printf("2 - Sanatçı Listeleme\n");
+        printf("1 - Sanatci Ekleme\n");
+        printf("2 - Sanatci Listeleme\n");
         printf("3 - Cikis\n");
         scanf("%d", &islem);
         getchar(); // Önceki scanf'den kalan newline karakterini al
 
         switch (islem) {
             case 1: // Veri yazma işlemi
-                printf("Bir sanatçı girin: ");
+                printf("Bir sanatci girin: ");
                 fgets(veri, MAX_SIZE, stdin); // Kullanıcıdan veri al
 
                 // fgets() fonksiyonuyla okunan verinin sonunda bir satır ataması oluşur,
