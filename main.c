@@ -16,11 +16,11 @@ void veriIsle() {
         printf("2 - Veri okuma\n");
         printf("3 - Çıkış\n");
         scanf("%d", &islem);
+        getchar(); // Önceki scanf'den kalan newline karakterini al
 
         switch (islem) {
             case 1: // Veri yazma işlemi
                 printf("Bir kelime girin: ");
-                getchar(); // Önceki scanf'den kalan newline karakterini al
                 fgets(veri, MAX_SIZE, stdin); // Kullanıcıdan veri al
 
                 // fgets() fonksiyonuyla okunan verinin sonunda bir satır ataması oluşur,
@@ -45,7 +45,11 @@ void veriIsle() {
                     exit(EXIT_FAILURE);
                 }
                 while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku
-                    printf("%s", veri); // Veriyi ekrana yaz
+                    printf("\nVeri dosyasındaki veriler:%s", veri); // Veriyi ekrana yaz
+                }
+                if (!feof(dosyaOku)) { // Dosya sonuna gelinmediyse
+                    printf("Dosya okuma hatası!\n");
+                    exit(EXIT_FAILURE);
                 }
                 fclose(dosyaOku); // Dosyayı kapat
                 break;
