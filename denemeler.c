@@ -6,7 +6,7 @@
 
 // Verileri dosyaya yazan ve dosyadan okuyan fonksiyon
 void veriIsle() {
-    char dosyaAdi[] = "veri.txt"; // Dosya adı
+    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
     char veri[MAX_SIZE];
     int islem;
 
