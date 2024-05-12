@@ -11,10 +11,10 @@ void veriIsle() {
     int islem;
 
     do {
-        printf("\nYapmak istediginiz islemi secin:\n");
+        printf("\nYapmak istediğiniz işlemi seçin:\n");
         printf("1 - Veri yazma\n");
         printf("2 - Veri okuma\n");
-        printf("3 - Cikis\n");
+        printf("3 - Çıkış\n");
         scanf("%d", &islem);
         getchar(); // Önceki scanf'den kalan newline karakterini al
 
@@ -30,37 +30,37 @@ void veriIsle() {
 
                 FILE *dosyaYaz = fopen(dosyaAdi, "a"); // Dosyayı ekleme modunda aç
                 if (dosyaYaz == NULL) {
-                    printf("Dosya acma hatasi!\n");
+                    printf("Dosya açma hatası!\n");
                     exit(EXIT_FAILURE);
                 }
                 fprintf(dosyaYaz, "%s\n", veri); // Veriyi dosyaya yaz ve yeni satır ekle
-                printf("Veri dosyaya yazildi.\n");
+                printf("Veri dosyaya yazıldı.\n");
                 fclose(dosyaYaz); // Dosyayı kapat
                 break;
 
             case 2: // Veri okuma işlemi
                 FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
                 if (dosyaOku == NULL) {
-                    printf("Dosya acma hatasi!\n");
+                    printf("Dosya açma hatası!\n");
                     exit(EXIT_FAILURE);
                 }
                 while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku
-                    printf("\nVeri dosyasindaki veriler:%s", veri); // Veriyi ekrana yaz
+                    printf("\nVeri dosyasındaki veriler:%s", veri); // Veriyi ekrana yaz
                 }
                 if (!feof(dosyaOku)) { // Dosya sonuna gelinmediyse
-                    printf("Dosya okuma hatasi!\n");
+                    printf("Dosya okuma hatası!\n");
                     exit(EXIT_FAILURE);
                 }
                 fclose(dosyaOku); // Dosyayı kapat
                 break;
 
             case 3: // Çıkış
-                printf("Programdan cikiliyor...\n");
+                printf("Programdan çıkılıyor...\n");
                 exit(EXIT_SUCCESS);
                 break;
 
             default:
-                printf("Gecersiz islem!\n");
+                printf("Geçersiz işlem!\n");
                 break;
         }
     } while (islem != 3);
