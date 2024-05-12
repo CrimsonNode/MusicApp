@@ -3,12 +3,13 @@
 //sarki ekleme kısmında sanatçı adı da istenecek
 //arama kısmı 2'ye ayrılacak 1-sarkı adıyla arama 2-sanatcı adıyla arama
 //tümünü listeleme kısmı 2'ye ayrılacak 1-sarkı adlarını listele 2-sanatcı adlarını listele
-//ekleme, silme işlemleri hem txt dosyasında hem de veri yapılarında olmali
+//ekleme, silme işlemleri hem txt dosyasında hem de veri yapılarında olmali 2 secenek var?? 1-her işlemden sonra aynı işlemi txt dosyasında yapmak 2-işlemlerin hepsi bitince verinin hepsini txt dosyasına geçirmek
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #define MAX_SIZE 100
 
+void veriCek();
 void sarkiIslemMenu(); // Fonksiyonların prototipleri deklare edilmektedir.
 void sarkiEkle();
 void sarkiListele();
@@ -17,19 +18,22 @@ typedef struct Sarki{
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
     int sarkiNumarasi;
+    struct Sarki* ileri;
 }Sarki;
 typedef Sarki* Sarkiptr;
 
+/*
 typedef struct TreeNode{
     Sarkiptr sarkibilgi;
     struct TreeNode* left;
     struct TreeNode* right;
 }TreeNode;
 typedef TreeNode* TreeNodeptr;
-
+*/
 
 int main()
 {
+    veriCek();//txt dosyasından veri yapısına veri çek
     sarkiIslemMenu();
 }
 
@@ -66,9 +70,29 @@ void sarkiIslemMenu() {
         }
     } while (islem != 3);
 }
+//devam edilecek...
+Sarkiptr createNode()
+
+void veriCek(){
+    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
+    char veri[MAX_SIZE];
+
+
+
+
+    FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
+    if (dosyaOku == NULL) {
+        printf("Dosya acma hatasi!\n");
+        exit(EXIT_FAILURE);
+    }
+    while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku                    
+        
+        
+    }    
+}
 
 void sarkiEkle(){
-    char dosyaAdi[] = "sarkilar.txt"; // Dosya adı
+    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
     char veri[MAX_SIZE];
 
     printf("Bir sarki girin: ");
@@ -90,7 +114,7 @@ void sarkiEkle(){
 }
 
 void sarkiListele(){
-    char dosyaAdi[] = "sarkilar.txt"; // Dosya adı
+    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
     char veri[MAX_SIZE];
 
     FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
