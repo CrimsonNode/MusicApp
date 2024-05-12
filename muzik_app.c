@@ -66,7 +66,7 @@ void sarkiEkle() // Sisteme şarkı ekleme fonksiyonu.
     int karakterSayisi, sarkiNo;
     int dosyaUzunlugu;
 
-    sarkiPtr = fopen("sarkilar.bin", "ab+"); // Dosya ekleme ve okuma modunda açılmaktadır.
+    sarkiPtr = fopen("sarkilar.txt", "ab+"); // Dosya ekleme ve okuma modunda açılmaktadır.
     if (sarkiPtr == NULL)
     {
         printf("sarkilar.bin Dosyasi Acilamadi...\n");
@@ -114,7 +114,7 @@ void sanatciEkle() // Sisteme sanatçı ekleme fonksiyonu.
     int karakterSayisi, sanatciNo;
     int dosyaUzunlugu;
 
-    sanatciPtr = fopen("sanatcilar.bin", "ab+"); // Dosya ekleme ve okuma modunda açılmaktadır.
+    sanatciPtr = fopen("sanatcilar.txt", "ab+"); // Dosya ekleme ve okuma modunda açılmaktadır.
     if (sanatciPtr == NULL)
     {
         printf("sanatcilar.bin Dosyasi Acilamadi...\n");
