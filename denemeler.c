@@ -1,3 +1,5 @@
+//VERİLERİ DOSYAYA EKLEME ÖZELLİĞİ EKLENECEK
+//ŞUANDA DOSYADAN VERİ ÇEKİYOR AMA DOSYAYA VERİ YÜKLEYEMİYOR(BOZUK)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +11,7 @@ struct Sarki
 {
     int sarkiId;
     char sarkiAdi[31];
-    Sarki *next;
+    struct Sarki *next;
 };
 
 typedef struct Sarki Sarki;
@@ -20,7 +22,7 @@ struct Sanatci
 {
     int sanatciId;
     char sanatciAdi[31];
-    Sanatci *next;
+    struct Sanatci *next;
 };
 
 typedef struct Sanatci Sanatci;
@@ -51,7 +53,7 @@ void sarkiEkle(char sarkiAdi[],int sarkiId)
         }
         temp->next = yeniSarki;
     }
-
+/*
     // Dosyaya da ekleyelim
     FILE *dosya = fopen("sarki.txt", "a");
     if (dosya == NULL)
@@ -60,13 +62,14 @@ void sarkiEkle(char sarkiAdi[],int sarkiId)
         exit(1);
     }
     fprintf(dosya, "%s\n", sarkiAdi);
-    fclose(dosya);
+    fclose(dosya);*/
 }
 
 // Yeni bir sanatçıyı bağlı listeye ekler
-void sanatciEkle(char sanatciAdi[])
+void sanatciEkle(char sanatciAdi[],int sanatciId)
 {
     SanatciPtr yeniSanatci = (SanatciPtr)malloc(sizeof(Sanatci));
+    yeniSanatci->sanatciId = sanatciId;
     strcpy(yeniSanatci->sanatciAdi, sanatciAdi);
     yeniSanatci->next = NULL;
 
@@ -83,7 +86,7 @@ void sanatciEkle(char sanatciAdi[])
         }
         temp->next = yeniSanatci;
     }
-
+/*
     // Dosyaya da ekleyelim
     FILE *dosya = fopen("sanatci.txt", "a");
     if (dosya == NULL)
@@ -92,18 +95,17 @@ void sanatciEkle(char sanatciAdi[])
         exit(1);
     }
     fprintf(dosya, "%s\n", sanatciAdi);
-    fclose(dosya);
+    fclose(dosya);*/
 }
 
 // Şarkıları listeler
 void sarkilariListele()
 {
     SarkiPtr temp = sarkiBaslangic;
-    int i = 1;
     printf("\nSarkilar:\n");
     while (temp != NULL)
     {
-        printf("%d) %s\n", i++, temp->sarkiAdi);
+        printf("%d) %s\n", temp->sarkiId, temp->sarkiAdi);
         temp = temp->next;
     }
 }
@@ -112,17 +114,16 @@ void sarkilariListele()
 void sanatcilariListele()
 {
     SanatciPtr temp = sanatciBaslangic;
-    int i = 1;
     printf("\nSanatcilar:\n");
     while (temp != NULL)
     {
-        printf("%d) %s\n", i++, temp->sanatciAdi);
+        printf("%d) %s\n", temp->sanatciId, temp->sanatciAdi);
         temp = temp->next;
     }
 }
 
 // Şarkı işlemlerini gerçekleştirir
-void sarkiIslem()
+void sarkiIslem(int sarkiId)
 {
     int islem;
     char veri[MAX_SIZE];
@@ -141,7 +142,7 @@ void sarkiIslem()
         case 1:
             printf("Bir sarki girin: ");
             fgets(veri, MAX_SIZE, stdin);
-            sarkiEkle(veri);
+            sarkiEkle(veri,sarkiId++);
             printf("Sarki eklendi.\n");
             break;
 
@@ -161,7 +162,7 @@ void sarkiIslem()
 }
 
 // Sanatçı işlemlerini gerçekleştirir
-void sanatciIslem()
+void sanatciIslem(int sanatciId)
 {
     int islem;
     char veri[MAX_SIZE];
@@ -180,7 +181,8 @@ void sanatciIslem()
         case 1:
             printf("Bir sanatci girin: ");
             fgets(veri, MAX_SIZE, stdin);
-            sanatciEkle(veri);
+            sanatciEkle(veri,sanatciId++);
+
             printf("Sanatci eklendi.\n");
             break;
 
@@ -201,13 +203,15 @@ void sanatciIslem()
 
 int main()
 {
+    int sarkiId=1;
+    int sanatciId=1;
     char secim;
     FILE *sarkiDosya;
     FILE *sanatciDosya;
 
     // Dosyaları aç
-    sarkiDosya = fopen("sarkilar.txt", "a+");
-    sanatciDosya = fopen("sanatcilar.txt", "a+");
+    sarkiDosya = fopen("sarki.txt", "a+");
+    sanatciDosya = fopen("sanatci.txt", "a+");
     if (sarkiDosya == NULL || sanatciDosya == NULL)
     {
         fprintf(stderr, "Dosya acilamadi!");
@@ -217,14 +221,14 @@ int main()
     // Dosyalardan şarkıları ve sanatçıları oku
     char sarki[MAX_SIZE];
     while (fgets(sarki, MAX_SIZE, sarkiDosya) != NULL)
-    {
-        sarkiEkle(sarki);
+    {       
+        sarkiEkle(sarki,sarkiId++);
     }
 
     char sanatci[MAX_SIZE];
     while (fgets(sanatci, MAX_SIZE, sanatciDosya) != NULL)
     {
-        sanatciEkle(sanatci);
+        sanatciEkle(sanatci,sanatciId++);
     }
 
     do
@@ -243,13 +247,13 @@ int main()
         case '1':
             printf("\n-Sarki Islemlerinden Secim Yap-\n");
             printf("----------------\n\n");
-            sarkiIslem();
+            sarkiIslem(sarkiId);
             printf("\n");
             break;
         case '2':
             printf("\n-Sanatci Islemlerinden Secim Yap-\n");
             printf("-------------\n\n");
-            sanatciIslem();
+            sanatciIslem(sanatciId);
             printf("\n");
             break;
         case '3':
