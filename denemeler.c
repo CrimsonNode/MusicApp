@@ -7,8 +7,9 @@
 // Şarkı yapısı
 struct Sarki
 {
+    int sarkiId;
     char sarkiAdi[31];
-    struct Sarki *next;
+    Sarki *next;
 };
 
 typedef struct Sarki Sarki;
@@ -17,8 +18,9 @@ typedef Sarki *SarkiPtr;
 // Sanatçı yapısı
 struct Sanatci
 {
+    int sanatciId;
     char sanatciAdi[31];
-    struct Sanatci *next;
+    Sanatci *next;
 };
 
 typedef struct Sanatci Sanatci;
@@ -28,10 +30,12 @@ SarkiPtr sarkiBaslangic = NULL;
 SanatciPtr sanatciBaslangic = NULL;
 
 // Yeni bir şarkıyı bağlı listeye ekler
-void sarkiEkle(char sarkiAdi[])
+void sarkiEkle(char sarkiAdi[],int sarkiId)
 {
     SarkiPtr yeniSarki = (SarkiPtr)malloc(sizeof(Sarki));
+    yeniSarki->sarkiId=sarkiId;
     strcpy(yeniSarki->sarkiAdi, sarkiAdi);
+
     yeniSarki->next = NULL;
 
     if (sarkiBaslangic == NULL)
