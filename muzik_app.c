@@ -10,14 +10,23 @@ void sanatciIslem();
 struct Sarki // Şarkı yapısı tanımlanmaktadır.
 {
     char sarkiAdi[31];
-    int sarkiNumarasi;
+    Sarkiptr ileri;
 };
+typedef struct Sarki Sarki;
+typedef Sarki* Sarkiptr;
 
 struct Sanatci // Sanatçı yapısı tanımlanmaktadır.
 {
     char sanatciAdi[31];
-    int sanatciNumarasi;
+    Sanatciptr ileri;
 };
+typedef struct Sanatci Sanatci;
+typedef Sanatci* Sanatciptr;
+
+Sarkiptr Sarkbaslangic = NULL;
+Sanatciptr Sanatcibaslangic = NULL;
+
+
 
 
 int main()

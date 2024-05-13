@@ -1,136 +1,216 @@
-//veri yapıları baştan oluşturulacak
-//veriler txt dosyasından okunup veri yapısına aktarılacak
-//sarki ekleme kısmında sanatçı adı da istenecek
-//arama kısmı 2'ye ayrılacak 1-sarkı adıyla arama 2-sanatcı adıyla arama
-//tümünü listeleme kısmı 2'ye ayrılacak 1-sarkı adlarını listele 2-sanatcı adlarını listele
-//ekleme, silme işlemleri hem txt dosyasında hem de veri yapılarında olmali 2 secenek var?? 1-her işlemden sonra aynı işlemi txt dosyasında yapmak 2-işlemlerin hepsi bitince verinin hepsini txt dosyasına geçirmek
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define MAX_SIZE 100
 
-void veriCek();
-void sarkiIslemMenu(); // Fonksiyonların prototipleri deklare edilmektedir.
-void sarkiEkle();
-void sarkiListele();
-
-typedef struct Sarki{
-    char sarkiAdi[MAX_SIZE];
-    char sanatciAdi[MAX_SIZE];
-    int sarkiNumarasi;
-    struct Sarki* ileri;
-}Sarki;
-typedef Sarki* Sarkiptr;
-
-/*
-typedef struct TreeNode{
-    Sarkiptr sarkibilgi;
-    struct TreeNode* left;
-    struct TreeNode* right;
-}TreeNode;
-typedef TreeNode* TreeNodeptr;
-*/
-
-int main()
+// Şarkı yapısı
+struct Sarki
 {
-    veriCek();//txt dosyasından veri yapısına veri çek
-    sarkiIslemMenu();
+    char sarkiAdi[31];
+    struct Sarki *next;
+};
+
+typedef struct Sarki Sarki;
+typedef Sarki *SarkiPtr;
+
+// Sanatçı yapısı
+struct Sanatci
+{
+    char sanatciAdi[31];
+    struct Sanatci *next;
+};
+
+typedef struct Sanatci Sanatci;
+typedef Sanatci *SanatciPtr;
+
+SarkiPtr sarkiBaslangic = NULL;
+SanatciPtr sanatciBaslangic = NULL;
+
+// Yeni bir şarkıyı bağlı listeye ekler
+void sarkiEkle(char sarkiAdi[])
+{
+    SarkiPtr yeniSarki = (SarkiPtr)malloc(sizeof(Sarki));
+    strcpy(yeniSarki->sarkiAdi, sarkiAdi);
+    yeniSarki->next = NULL;
+
+    if (sarkiBaslangic == NULL)
+    {
+        sarkiBaslangic = yeniSarki;
+    }
+    else
+    {
+        SarkiPtr temp = sarkiBaslangic;
+        while (temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        temp->next = yeniSarki;
+    }
 }
 
-void sarkiIslemMenu() {
-    int islem;
+// Yeni bir sanatçıyı bağlı listeye ekler
+void sanatciEkle(char sanatciAdi[])
+{
+    SanatciPtr yeniSanatci = (SanatciPtr)malloc(sizeof(Sanatci));
+    strcpy(yeniSanatci->sanatciAdi, sanatciAdi);
+    yeniSanatci->next = NULL;
 
-    do {
-        printf("   =Muzik Veri Tabani Sistemi=\n");
-        printf("------------------------------------\n");
+    if (sanatciBaslangic == NULL)
+    {
+        sanatciBaslangic = yeniSanatci;
+    }
+    else
+    {
+        SanatciPtr temp = sanatciBaslangic;
+        while (temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        temp->next = yeniSanatci;
+    }
+}
+
+// Şarkıları listeler
+void sarkilariListele()
+{
+    SarkiPtr temp = sarkiBaslangic;
+    int i = 1;
+    printf("\nSarkilar:\n");
+    while (temp != NULL)
+    {
+        printf("%d) %s\n", i++, temp->sarkiAdi);
+        temp = temp->next;
+    }
+}
+
+// Sanatçıları listeler
+void sanatcilariListele()
+{
+    SanatciPtr temp = sanatciBaslangic;
+    int i = 1;
+    printf("\nSanatcilar:\n");
+    while (temp != NULL)
+    {
+        printf("%d) %s\n", i++, temp->sanatciAdi);
+        temp = temp->next;
+    }
+}
+
+// Şarkı işlemlerini gerçekleştirir
+void sarkiIslem()
+{
+    int islem;
+    char veri[MAX_SIZE];
+
+    do
+    {
         printf("\nYapmak istediginiz islemi secin:\n");
-        printf("1 - Sarki Ekle\n");
-        printf("2 - Sarkilari Listele\n");
+        printf("1 - Sarki Ekleme\n");
+        printf("2 - Sarkilari Listeleme\n");
         printf("3 - Cikis\n");
         scanf("%d", &islem);
         getchar(); // Önceki scanf'den kalan newline karakterini al
 
-        switch (islem) {
-            case 1:
-                sarkiEkle();
-                break;
+        switch (islem)
+        {
+        case 1:
+            printf("Bir sarki girin: ");
+            fgets(veri, MAX_SIZE, stdin);
+            sarkiEkle(veri);
+            printf("Sarki eklendi.\n");
+            break;
 
-            case 2:
-                sarkiListele();
-                break;
+        case 2:
+            sarkilariListele();
+            break;
 
-            case 3: // Çıkış
-                printf("Programdan cikiliyor...\n");
-                exit(EXIT_SUCCESS);
-                break;
+        case 3:
+            printf("Programdan cikiliyor...\n");
+            break;
 
-            default:
-                printf("Gecersiz islem!\n");
-                break;
+        default:
+            printf("Gecersiz islem!\n");
+            break;
         }
     } while (islem != 3);
 }
-//devam edilecek...
-Sarkiptr createNode()
 
-void veriCek(){
-    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
+// Sanatçı işlemlerini gerçekleştirir
+void sanatciIslem()
+{
+    int islem;
     char veri[MAX_SIZE];
 
+    do
+    {
+        printf("\nYapmak istediginiz islemi secin:\n");
+        printf("1 - Sanatci Ekleme\n");
+        printf("2 - Sanatci Listeleme\n");
+        printf("3 - Cikis\n");
+        scanf("%d", &islem);
+        getchar(); // Önceki scanf'den kalan newline karakterini al
 
+        switch (islem)
+        {
+        case 1:
+            printf("Bir sanatci girin: ");
+            fgets(veri, MAX_SIZE, stdin);
+            sanatciEkle(veri);
+            printf("Sanatci eklendi.\n");
+            break;
 
+        case 2:
+            sanatcilariListele();
+            break;
 
-    FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
-    if (dosyaOku == NULL) {
-        printf("Dosya acma hatasi!\n");
-        exit(EXIT_FAILURE);
-    }
-    while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku                    
-        
-        
-    }    
+        case 3:
+            printf("Programdan cikiliyor...\n");
+            break;
+
+        default:
+            printf("Gecersiz islem!\n");
+            break;
+        }
+    } while (islem != 3);
 }
 
-void sarkiEkle(){
-    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
-    char veri[MAX_SIZE];
+int main()
+{
+    char secim;
+    do
+    {
+        printf("   =Muzik Veri Tabani Sistemi=\n");
+        printf("------------------------------------\n");
+        printf("(1) - Sarki Islemleri\n");
+        printf("(2) - Sanatci Islemleri\n");
+        printf("(3) - Cikis\n");
+        printf("------------------------------------\n");
+        printf("Seciminiz:");
+        scanf(" %c", &secim); // Kullanıcıdan seçimi alınmaktadır.
+        getchar();           // Buffer boşaltılmaktadır.
+        switch (secim)
+        {
+        case '1':
+            printf("\n-Sarki Islemlerinden Secim Yap-\n");
+            printf("----------------\n\n");
+            sarkiIslem();
+            printf("\n");
+            break;
+        case '2':
+            printf("\n-Sanatci Islemlerinden Secim Yap-\n");
+            printf("-------------\n\n");
+            sanatciIslem();
+            printf("\n");
+            break;
+        case '3':
+            printf("\nMuzik Veri Tabani Sisteminden Cikmaktasiniz...\n");
+            break;
+        default:
+            printf("\nBoyle Bir Islem Seceneginiz Bulunmamaktadir. Yeniden Secim Yapiniz.\n\n");
+            break;
+        }
+    } while (secim != '3'); // Kullanıcının 3 girmesiyle döngü sona ermekte ve programdan çıkılmaktadır.
 
-    printf("Bir sarki girin: ");
-    fgets(veri, MAX_SIZE, stdin); // Kullanıcıdan veri al
-
-    // fgets() fonksiyonuyla okunan verinin sonunda bir satır ataması oluşur,
-    // bunu kaldırmak için '\n' karakterini kaldırıyoruz.
-    if (veri[strlen(veri) - 1] == '\n') 
-        veri[strlen(veri) - 1] = '\0';
-
-    FILE *dosyaYaz = fopen(dosyaAdi, "a"); // Dosyayı ekleme modunda aç
-    if (dosyaYaz == NULL) {
-        printf("Dosya acma hatasi!\n");
-        exit(EXIT_FAILURE);
-    }
-    fprintf(dosyaYaz, "%s\n", veri); // Veriyi dosyaya yaz ve yeni satır ekle
-    printf("Sarki sisteme eklendi.\n");
-    fclose(dosyaYaz); // Dosyayı kapat
-}
-
-void sarkiListele(){
-    char dosyaAdi[] = "denemeler.txt"; // Dosya adı
-    char veri[MAX_SIZE];
-
-    FILE *dosyaOku = fopen(dosyaAdi, "r"); // Dosyayı okuma modunda aç
-    if (dosyaOku == NULL) {
-        printf("Dosya acma hatasi!\n");
-        exit(EXIT_FAILURE);
-    }
-    printf("\nSarkilar:");
-    int i = 1;
-    while (fgets(veri, MAX_SIZE, dosyaOku) != NULL) { // Dosyadan veri oku                    
-        printf("\n%d)%s", i,veri); // Veriyi ekrana yaz
-        i++;
-    }
-    if (!feof(dosyaOku)) { // Dosya sonuna gelinmediyse
-        printf("Dosya okuma hatasi!\n");
-        exit(EXIT_FAILURE);
-    }
-    fclose(dosyaOku); // Dosyayı kapat
+    return 0;
 }
