@@ -47,6 +47,16 @@ void sarkiEkle(char sarkiAdi[])
         }
         temp->next = yeniSarki;
     }
+
+    // Dosyaya da ekleyelim
+    FILE *dosya = fopen("sarki.txt", "a");
+    if (dosya == NULL)
+    {
+        fprintf(stderr, "Dosya acilamadi!");
+        exit(1);
+    }
+    fprintf(dosya, "%s\n", sarkiAdi);
+    fclose(dosya);
 }
 
 // Yeni bir sanatçıyı bağlı listeye ekler
@@ -69,6 +79,16 @@ void sanatciEkle(char sanatciAdi[])
         }
         temp->next = yeniSanatci;
     }
+
+    // Dosyaya da ekleyelim
+    FILE *dosya = fopen("sanatci.txt", "a");
+    if (dosya == NULL)
+    {
+        fprintf(stderr, "Dosya acilamadi!");
+        exit(1);
+    }
+    fprintf(dosya, "%s\n", sanatciAdi);
+    fclose(dosya);
 }
 
 // Şarkıları listeler
@@ -178,6 +198,31 @@ void sanatciIslem()
 int main()
 {
     char secim;
+    FILE *sarkiDosya;
+    FILE *sanatciDosya;
+
+    // Dosyaları aç
+    sarkiDosya = fopen("sarkilar.txt", "a+");
+    sanatciDosya = fopen("sanatcilar.txt", "a+");
+    if (sarkiDosya == NULL || sanatciDosya == NULL)
+    {
+        fprintf(stderr, "Dosya acilamadi!");
+        exit(1);
+    }
+
+    // Dosyalardan şarkıları ve sanatçıları oku
+    char sarki[MAX_SIZE];
+    while (fgets(sarki, MAX_SIZE, sarkiDosya) != NULL)
+    {
+        sarkiEkle(sarki);
+    }
+
+    char sanatci[MAX_SIZE];
+    while (fgets(sanatci, MAX_SIZE, sanatciDosya) != NULL)
+    {
+        sanatciEkle(sanatci);
+    }
+
     do
     {
         printf("   =Muzik Veri Tabani Sistemi=\n");
@@ -211,6 +256,10 @@ int main()
             break;
         }
     } while (secim != '3'); // Kullanıcının 3 girmesiyle döngü sona ermekte ve programdan çıkılmaktadır.
+
+    // Dosyaları kapat
+    fclose(sarkiDosya);
+    fclose(sanatciDosya);
 
     return 0;
 }
