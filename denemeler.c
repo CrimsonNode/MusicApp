@@ -42,12 +42,13 @@ void sarkiSil(int sarkiId) {
 
     SarkiPtr temp = sarkiBaslangic;
     SarkiPtr onceki = NULL;
-
+    int sayac = 0;
   
     // Silinecek düğümün aranması
     while (temp != NULL && temp->sarkiId != sarkiId) {
         onceki = temp;
         temp = temp->next;
+        sayac++;
     }
 
     // Eğer şarkı bulunamazsa
@@ -59,11 +60,27 @@ void sarkiSil(int sarkiId) {
     // Düğüm listeden çıkarılır
     onceki->next = temp->next;
 
+
+
     free(temp);
     printf("Sarki silindi: %d\n", sarkiId);
 }
-//bağlı liste,tree,hash,graf
 
+void sarkiGuncelle(int sarkiId, char yeniSarkiAdi[], char yeniSanatciAdi[]) {
+    SarkiPtr temp = sarkiBaslangic;
+
+    while (temp != NULL) {
+        if (temp->sarkiId == sarkiId) {
+            strcpy(temp->sarkiAdi, yeniSarkiAdi);
+            strcpy(temp->sanatciAdi, yeniSanatciAdi);
+            printf("Sarki guncellendi: ID=%d, Yeni Sarki Adi = %s,\n Yeni Sanatci Adi = %s\n", sarkiId, yeniSarkiAdi, yeniSanatciAdi);
+            return;
+        }
+        temp = temp->next;
+    }
+
+    printf("Sarki bulunamadi: ID=%d\n", sarkiId);
+}
 // Yeni bir şarkıyı bağlı listeye ekler
 void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId)
 {
@@ -108,14 +125,18 @@ void sarkiIslem(int sarkiId)
     int islem;
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
+    char yeniSarkiAdi[MAX_SIZE];
+    char yeniSanatciAdi[MAX_SIZE];
     int silId;
+    int guncelleId;
     do
     {
         printf("\nYapmak istediginiz islemi secin:\n");
         printf("1 - Sarki Ekleme\n");
         printf("2 - Sarkilari Listeleme\n");
         printf("3 - Sarki Sil\n");
-        printf("4 - Cikis\n");
+        printf("4 - Sarki Guncelle\n");
+        printf("5 - Cikis\n");
         scanf("%d", &islem);
         getchar(); // Önceki scanf'den kalan newline karakterini al
 
@@ -130,7 +151,6 @@ void sarkiIslem(int sarkiId)
             dosyayaYaz(sarkiAdi,sanatciAdi);
             printf("Sarki eklendi.\n");
             break;
-
         case 2:
             sarkilariListele();
             break;
@@ -140,14 +160,25 @@ void sarkiIslem(int sarkiId)
             sarkiSil(silId);
             break;
         case 4:
+            printf("Guncellenecek sarkinin Id'sini giriniz:");
+            scanf("%d",&guncelleId);
+            getchar();
+            printf("Guncellemek istediginiz sarkiyi giriniz:");
+            fgets(yeniSarkiAdi, MAX_SIZE, stdin);
+            printf("Guncellemek istediginiz sanatci adini giriniz:");
+            fgets(yeniSanatciAdi, MAX_SIZE, stdin);
+            sarkiGuncelle(guncelleId,yeniSarkiAdi,yeniSanatciAdi);
+            dosyayaYaz(yeniSarkiAdi,yeniSanatciAdi);
+            printf("Guncellendi.\n");
+            break;
+        case 5:
             printf("Programdan cikiliyor...\n");
             break;
-
         default:
             printf("Gecersiz islem!\n");
             break;
         }
-    } while (islem != 4);
+    } while (islem != 5);
 }
 
 
