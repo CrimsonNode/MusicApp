@@ -1,5 +1,3 @@
-//VERİLERİ DOSYAYA EKLEME ÖZELLİĞİ EKLENECEK
-//ŞUANDA DOSYADAN VERİ ÇEKİYOR AMA DOSYAYA VERİ YÜKLEYEMİYOR(BOZUK)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
