@@ -4,6 +4,8 @@
 
 #define MAX_SIZE 100
 
+
+
 // Şarkı yapısı
 struct Sarki
 {
@@ -31,6 +33,36 @@ void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
     fprintf(dosya, "%s%s", sarkiAdi,sanatciAdi);
     fclose(dosya);
 }
+
+void sarkiSil(int sarkiId) {
+    if (sarkiBaslangic == NULL) {
+        printf("Liste bos.\n");
+        return;
+    }
+
+    SarkiPtr temp = sarkiBaslangic;
+    SarkiPtr onceki = NULL;
+
+  
+    // Silinecek düğümün aranması
+    while (temp != NULL && temp->sarkiId != sarkiId) {
+        onceki = temp;
+        temp = temp->next;
+    }
+
+    // Eğer şarkı bulunamazsa
+    if (temp == NULL) {
+        printf("Sarki bulunamadi: %d\n", sarkiId);
+        return;
+    }
+
+    // Düğüm listeden çıkarılır
+    onceki->next = temp->next;
+
+    free(temp);
+    printf("Sarki silindi: %d\n", sarkiId);
+}
+//bağlı liste,tree,hash,graf
 
 // Yeni bir şarkıyı bağlı listeye ekler
 void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId)
@@ -76,13 +108,14 @@ void sarkiIslem(int sarkiId)
     int islem;
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
-
+    int silId;
     do
     {
         printf("\nYapmak istediginiz islemi secin:\n");
         printf("1 - Sarki Ekleme\n");
         printf("2 - Sarkilari Listeleme\n");
-        printf("3 - Cikis\n");
+        printf("3 - Sarki Sil\n");
+        printf("4 - Cikis\n");
         scanf("%d", &islem);
         getchar(); // Önceki scanf'den kalan newline karakterini al
 
@@ -101,8 +134,12 @@ void sarkiIslem(int sarkiId)
         case 2:
             sarkilariListele();
             break;
-
         case 3:
+            printf("Silmek istediginiz sarkinin Id sini giriniz:");
+            scanf("%d",&silId);
+            sarkiSil(silId);
+            break;
+        case 4:
             printf("Programdan cikiliyor...\n");
             break;
 
@@ -110,8 +147,9 @@ void sarkiIslem(int sarkiId)
             printf("Gecersiz islem!\n");
             break;
         }
-    } while (islem != 3);
+    } while (islem != 4);
 }
+
 
 int main()
 {
