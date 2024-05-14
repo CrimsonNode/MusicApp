@@ -31,6 +31,19 @@ typedef Sanatci *SanatciPtr;
 SarkiPtr sarkiBaslangic = NULL;
 SanatciPtr sanatciBaslangic = NULL;
 
+void dosyayaYaz(char sarkiAdi[]){
+    
+    // Dosyaya da ekleyelim
+    FILE *dosya = fopen("sarki.txt", "a");
+    if (dosya == NULL)
+    {
+        fprintf(stderr, "Dosya acilamadi!");
+        exit(1);
+    }
+    fprintf(dosya, "%s", sarkiAdi);
+    fclose(dosya);
+}
+
 // Yeni bir şarkıyı bağlı listeye ekler
 void sarkiEkle(char sarkiAdi[],int sarkiId)
 {
@@ -53,16 +66,6 @@ void sarkiEkle(char sarkiAdi[],int sarkiId)
         }
         temp->next = yeniSarki;
     }
-/*
-    // Dosyaya da ekleyelim
-    FILE *dosya = fopen("sarki.txt", "a");
-    if (dosya == NULL)
-    {
-        fprintf(stderr, "Dosya acilamadi!");
-        exit(1);
-    }
-    fprintf(dosya, "%s\n", sarkiAdi);
-    fclose(dosya);*/
 }
 
 // Yeni bir sanatçıyı bağlı listeye ekler
@@ -86,16 +89,6 @@ void sanatciEkle(char sanatciAdi[],int sanatciId)
         }
         temp->next = yeniSanatci;
     }
-/*
-    // Dosyaya da ekleyelim
-    FILE *dosya = fopen("sanatci.txt", "a");
-    if (dosya == NULL)
-    {
-        fprintf(stderr, "Dosya acilamadi!");
-        exit(1);
-    }
-    fprintf(dosya, "%s\n", sanatciAdi);
-    fclose(dosya);*/
 }
 
 // Şarkıları listeler
@@ -143,6 +136,7 @@ void sarkiIslem(int sarkiId)
             printf("Bir sarki girin: ");
             fgets(veri, MAX_SIZE, stdin);
             sarkiEkle(veri,sarkiId++);
+            dosyayaYaz(veri);
             printf("Sarki eklendi.\n");
             break;
 
@@ -181,8 +175,7 @@ void sanatciIslem(int sanatciId)
         case 1:
             printf("Bir sanatci girin: ");
             fgets(veri, MAX_SIZE, stdin);
-            sanatciEkle(veri,sanatciId++);
-
+            sanatciEkle(veri,sanatciId++);           
             printf("Sanatci eklendi.\n");
             break;
 
