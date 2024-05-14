@@ -24,7 +24,7 @@ SarkiPtr sarkiBaslangic = NULL;
 void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
     
     // Dosyaya da ekleyelim
-    FILE *dosya = fopen("sarki.txt", "a");
+    FILE *dosya = fopen("sarki.txt", "ab+");
     if (dosya == NULL)
     {
         fprintf(stderr, "Dosya acilamadi!");
@@ -126,6 +126,14 @@ void sarkilariListele()
     }
 }
 
+void dosyaListele(){
+    SarkiPtr temp = sarkiBaslangic;
+    while (temp != NULL)
+    {
+        dosyayaYaz(temp->sarkiAdi, temp->sanatciAdi);
+        temp = temp->next;
+    }
+}
 
 // Şarkı işlemlerini gerçekleştirir
 void sarkiIslem(int sarkiId)
@@ -137,6 +145,7 @@ void sarkiIslem(int sarkiId)
     char yeniSanatciAdi[MAX_SIZE];
     int silId;
     int guncelleId;
+    FILE* dosyaSil;
     do
     {
         printf("\nYapmak istediginiz islemi secin:\n");
@@ -156,7 +165,6 @@ void sarkiIslem(int sarkiId)
             printf("Sanatcisini girin:");
             fgets(sanatciAdi, MAX_SIZE, stdin);
             sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++);
-            dosyayaYaz(sarkiAdi,sanatciAdi);
             printf("Sarki eklendi.\n");
             break;
         case 2:
@@ -179,6 +187,9 @@ void sarkiIslem(int sarkiId)
             printf("Guncellendi.\n");
             break;
         case 5:
+            dosyaSil = fopen("sarki.txt","w");
+            fclose(dosyaSil);
+            dosyaListele();
             printf("Programdan cikiliyor...\n");
             break;
         default:
