@@ -43,7 +43,14 @@ void sarkiSil(int sarkiId) {
     SarkiPtr temp = sarkiBaslangic;
     SarkiPtr onceki = NULL;
     int sayac = 0;
-  
+    
+    if (temp != NULL && temp->sarkiId == sarkiId) {
+        sarkiBaslangic = temp->next;
+        free(temp);
+        printf("Sarki silindi: %d\n", sarkiId);
+        return;
+    }
+
     // Silinecek düğümün aranması
     while (temp != NULL && temp->sarkiId != sarkiId) {
         onceki = temp;
@@ -119,6 +126,7 @@ void sarkilariListele()
     }
 }
 
+
 // Şarkı işlemlerini gerçekleştirir
 void sarkiIslem(int sarkiId)
 {
@@ -163,12 +171,11 @@ void sarkiIslem(int sarkiId)
             printf("Guncellenecek sarkinin Id'sini giriniz:");
             scanf("%d",&guncelleId);
             getchar();
-            printf("Guncellemek istediginiz sarkiyi giriniz:");
+            printf("Yeni sarki adini giriniz:");
             fgets(yeniSarkiAdi, MAX_SIZE, stdin);
-            printf("Guncellemek istediginiz sanatci adini giriniz:");
+            printf("Yeni sanatci adini giriniz:");
             fgets(yeniSanatciAdi, MAX_SIZE, stdin);
             sarkiGuncelle(guncelleId,yeniSarkiAdi,yeniSanatciAdi);
-            dosyayaYaz(yeniSarkiAdi,yeniSanatciAdi);
             printf("Guncellendi.\n");
             break;
         case 5:
