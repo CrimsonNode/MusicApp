@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_SIZE 150
+#define MAX_SIZE 100
 
 struct Queue{
     int dizi[10];
@@ -61,8 +61,7 @@ QueuePtr newQueue(){
 }
 
 void enqueue(QueuePtr q, int x) {
-    if (q->boyut == 10) {
-        printf("Queue dolu.\n");
+    if (q->boyut == 10) {        
         return;
     }
     q->arka = (q->arka + 1) % 10;
@@ -207,7 +206,6 @@ void sarkiGuncelle(int sarkiId, char yeniSarkiAdi[], char yeniSanatciAdi[]) {
         }
         temp = temp->next;
     }
-
     printf("Sarki bulunamadi: ID=%d\n", sarkiId);
 }
 
@@ -219,6 +217,8 @@ void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,TreePtr tree1)
     strcpy(yeniSarki->sanatciAdi, sanatciAdi);
     
     yeniSarki->next = NULL;
+    yeniSarki->left = NULL;
+    yeniSarki->right = NULL;
 
     if (sarkiBaslangic == NULL)
     {
@@ -256,8 +256,6 @@ void dosyaListele(){
         temp = temp->next;
     }
 }
-
-
 
 void islemYazdir(QueuePtr q){
     int count = 0;
