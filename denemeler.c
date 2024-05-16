@@ -1,3 +1,5 @@
+//BAĞLI LİSTE YAPISI DÜZENLENECEK
+//1 veya 2 VERİ YAPISI DAHA EKLENECEK
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +20,7 @@ struct Sarki
     int sarkiId;
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
-    struct Sarki *next;
+    struct Sarki* next;
     struct Sarki* right;
     struct Sarki* left;
 };
@@ -58,6 +60,72 @@ QueuePtr newQueue(){
     q->arka=-1;
     q->boyut=0;
     return q;
+}
+
+int height(SarkiPtr node) {
+    if (node == NULL)
+        return 0;
+    int left_height = height(node->left);
+    int right_height = height(node->right);
+    return 1 + (left_height > right_height ? left_height : right_height);
+}
+
+int balanceFactor(SarkiPtr node) {
+    if (node == NULL)
+        return 0;
+    return height(node->left) - height(node->right);
+}
+
+SarkiPtr rotateRight(SarkiPtr y) {
+    SarkiPtr x = y->left;
+    SarkiPtr T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+
+    return x;
+}
+
+SarkiPtr rotateLeft(SarkiPtr x) {
+    SarkiPtr y = x->right;
+    SarkiPtr T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    return y;
+}
+
+SarkiPtr insertAVL(SarkiPtr node, SarkiPtr newSarki) {
+    if (node == NULL)
+        return newSarki;
+
+    if (newSarki->sarkiId < node->sarkiId)
+        node->left = insertAVL(node->left, newSarki);
+    else if (newSarki->sarkiId > node->sarkiId)
+        node->right = insertAVL(node->right, newSarki);
+    else
+        return node;
+
+    int balance = balanceFactor(node);
+
+    if (balance > 1 && newSarki->sarkiId < node->left->sarkiId)
+        return rotateRight(node);
+
+    if (balance < -1 && newSarki->sarkiId > node->right->sarkiId)
+        return rotateLeft(node);
+
+    if (balance > 1 && newSarki->sarkiId > node->left->sarkiId) {
+        node->left = rotateLeft(node->left);
+        return rotateRight(node);
+    }
+
+    if (balance < -1 && newSarki->sarkiId < node->right->sarkiId) {
+        node->right = rotateRight(node->right);
+        return rotateLeft(node);
+    }
+
+    return node;
 }
 
 void enqueue(QueuePtr q, int x) {
@@ -235,17 +303,20 @@ void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,TreePtr tree1)
     }
     
     AddTree(tree1,yeniSarki);
+    tree1->root = insertAVL(tree1->root, yeniSarki);
 }
 
-void sarkilariListele()
-{
-    SarkiPtr temp = sarkiBaslangic;
-    printf("\nSarkilar:\n");
-    while (temp != NULL)
-    {
-        printf("%d) %s - %s\n", temp->sarkiId, temp->sarkiAdi, temp->sanatciAdi);
-        temp = temp->next;
+void preorder(SarkiPtr root) {
+    if (root != NULL) {
+        printf("%d) %s - %s\n", root->sarkiId, root->sarkiAdi, root->sanatciAdi);
+        preorder(root->left);
+        preorder(root->right);
     }
+}
+
+void sarkilariListele(TreePtr tree1) {
+    printf("\nSarkilar:\n");
+    preorder(tree1->root);
 }
 
 void dosyaListele(){
@@ -325,7 +396,7 @@ void sarkiIslem(int sarkiId,TreePtr tree1,QueuePtr q1)
             enqueue(q1,1);
             break;
         case 2:
-            sarkilariListele();
+            sarkilariListele(tree1);
             enqueue(q1,2);
             break;
         case 3:
