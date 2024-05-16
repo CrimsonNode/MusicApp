@@ -2,7 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_SIZE 100
+#define MAX_SIZE 150
+
+struct Queue{
+    int dizi[10];
+    int on;
+    int arka;
+    int boyut;
+};
+typedef struct Queue Queue;
+typedef Queue *QueuePtr;
 
 struct Sarki
 {
@@ -22,12 +31,60 @@ struct Tree{
     SarkiPtr root;
 };
 typedef struct Tree Tree;
-typedef Tree* Treeptr;
+typedef Tree* TreePtr;
 
-Treeptr newTree(){
-    Treeptr newTree=(Treeptr)malloc(sizeof(Tree));
+struct Stack{
+    int bas;
+    int dizi[10];
+};
+typedef struct Stack Stack;
+typedef Stack *StackPtr;
+
+StackPtr newStack(){
+    StackPtr yeniStack = (StackPtr)malloc(sizeof(Stack));
+    yeniStack->bas=-1;
+    return yeniStack;
+}
+
+TreePtr newTree(){
+    TreePtr newTree=(TreePtr)malloc(sizeof(Tree));
     newTree->root=NULL;
     return newTree;
+}
+
+QueuePtr newQueue(){
+    QueuePtr q=(QueuePtr)malloc(sizeof(Queue));
+    q->on=0;
+    q->arka=-1;
+    q->boyut=0;
+    return q;
+}
+
+void enqueue(QueuePtr q, int x) {
+    if (q->boyut == 10) {
+        printf("Queue dolu.\n");
+        return;
+    }
+    q->arka = (q->arka + 1) % 10;
+    q->dizi[q->arka] = x;
+    q->boyut++;
+}
+
+int dequeue(QueuePtr q) {
+    if (q->boyut == 0) {
+        printf("Queue bos.\n");
+        return -1;
+    }
+    int x = q->dizi[q->on];
+    q->on = (q->on + 1) % 10;
+    q->boyut--;
+    return x;
+}
+
+void initialize(QueuePtr q){
+    q->on=0;
+    q->arka=-1;
+    q->boyut=0;
 }
 
 SarkiPtr search(SarkiPtr sarki,int sarkiId){
@@ -45,7 +102,31 @@ SarkiPtr search(SarkiPtr sarki,int sarkiId){
             return search(sarki->right,sarkiId);
 }
 
-void AddTree(Treeptr tree,SarkiPtr sarki){   
+int isFull(StackPtr stack){    
+    return stack->bas==9;
+}
+
+int isEmpty(StackPtr stack){
+    return stack->bas==-1;
+}
+
+void pushStack(StackPtr stack,int x){
+    if(stack->bas == 9){
+        printf("Stack dolu.");
+        return;
+    }
+    stack->dizi[++stack->bas]=x;
+}
+
+int pop(StackPtr stack){
+    if(stack->bas == -1){
+        printf("Stack bos.");
+        return -1;
+    }
+    return stack->dizi[stack->bas--];
+}
+
+void AddTree(TreePtr tree,SarkiPtr sarki){   
     SarkiPtr temp = NULL;
     SarkiPtr s = tree->root;
     while(s!=NULL)
@@ -130,7 +211,7 @@ void sarkiGuncelle(int sarkiId, char yeniSarkiAdi[], char yeniSanatciAdi[]) {
     printf("Sarki bulunamadi: ID=%d\n", sarkiId);
 }
 
-void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,Treeptr tree1)
+void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,TreePtr tree1)
 {
     SarkiPtr yeniSarki = (SarkiPtr)malloc(sizeof(Sarki));
     yeniSarki->sarkiId=sarkiId;
@@ -176,9 +257,44 @@ void dosyaListele(){
     }
 }
 
-void sarkiIslem(int sarkiId,Treeptr tree1)
+
+
+void islemYazdir(QueuePtr q){
+    int count = 0;
+    while (q->boyut != 0) {            
+        switch (dequeue(q))
+            {
+            case 1:
+                count++;
+                printf("%d.Sarki Ekleme Islemi\n",count);                    
+                break;
+            case 2:
+                count++;
+                printf("%d.Sarkilari Listeleme Islemi\n",count);
+                break;
+            case 3:
+                count++;
+                printf("%d.Sarki Silme Islemi\n",count);
+                break;
+            case 4:
+                count++;
+                printf("%d.Sarki Guncelleme Islemi\n",count);
+                break;
+            case 5:
+                count++;
+                printf("%d.Sarki Arama Islemi\n",count);
+                break;
+            default:
+                printf("Gecersiz islem!\n",count);
+                break;
+            }
+    }
+}
+
+void sarkiIslem(int sarkiId,TreePtr tree1,QueuePtr q1)
 {
     int islem;
+    int arananId;
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
     char yeniSarkiAdi[MAX_SIZE];
@@ -194,7 +310,8 @@ void sarkiIslem(int sarkiId,Treeptr tree1)
         printf("3 - Sarki Sil\n");
         printf("4 - Sarki Guncelle\n");
         printf("5 - Sarki Arama\n");
-        printf("6 - Cikis\n");
+        printf("6 - Islem Listesi\n");
+        printf("7 - Cikis\n");
         scanf("%d", &islem);
         getchar();
 
@@ -206,16 +323,18 @@ void sarkiIslem(int sarkiId,Treeptr tree1)
             printf("Sanatcisini girin:");
             fgets(sanatciAdi, MAX_SIZE, stdin);
             sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++,tree1);
-
             printf("Sarki eklendi.\n");
+            enqueue(q1,1);
             break;
         case 2:
             sarkilariListele();
+            enqueue(q1,2);
             break;
         case 3:
             printf("Silmek istediginiz sarkinin Id sini giriniz:");
             scanf("%d",&silId);
             sarkiSil(silId);
+            enqueue(q1,3);
             break;
         case 4:
             printf("Guncellenecek sarkinin Id'sini giriniz:");
@@ -227,13 +346,21 @@ void sarkiIslem(int sarkiId,Treeptr tree1)
             fgets(yeniSanatciAdi, MAX_SIZE, stdin);
             sarkiGuncelle(guncelleId,yeniSarkiAdi,yeniSanatciAdi);
             printf("Guncellendi.\n");
+            enqueue(q1,4);
             break;
         case 5:
             printf("Aramak istediginiz sarkinin Id'sini giriniz:");
-            scanf("%d",&sarkiId);
+            scanf("%d",&arananId);
             getchar();
-            search(tree1->root,sarkiId);
+            search(tree1->root,arananId);
+            enqueue(q1,5);
+            break;
         case 6:
+            printf("\nYapilan son 10 islem goruntuleniyor...\n");
+            islemYazdir(q1);
+            
+            break;
+        case 7:
             dosyaSil = fopen("sarki.txt","w");
             fclose(dosyaSil);
             dosyaListele();
@@ -243,12 +370,14 @@ void sarkiIslem(int sarkiId,Treeptr tree1)
             printf("Gecersiz islem!\n");
             break;
         }
-    } while (islem != 6);
+    } while (islem != 7);
 }
 
 int main()
 {
-    Treeptr tree1= newTree();
+    QueuePtr q1 = newQueue();
+    TreePtr tree1= newTree();
+    StackPtr stack1= newStack();
     int sarkiId=1;
     FILE *sarkiDosya;
 
@@ -266,7 +395,7 @@ int main()
         sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++,tree1);
     }
 
-    sarkiIslem(sarkiId,tree1);
+    sarkiIslem(sarkiId,tree1,q1);
 
     fclose(sarkiDosya);
 
