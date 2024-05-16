@@ -4,7 +4,6 @@
 
 #define MAX_SIZE 100
 
-// Şarkı yapısı
 struct Sarki
 {
     int sarkiId;
@@ -14,7 +13,6 @@ struct Sarki
     struct Sarki* right;
     struct Sarki* left;
 };
-
 typedef struct Sarki Sarki;
 typedef Sarki *SarkiPtr;
 
@@ -23,7 +21,6 @@ SarkiPtr sarkiBaslangic = NULL;
 struct Tree{
     SarkiPtr root;
 };
-
 typedef struct Tree Tree;
 typedef Tree* Treeptr;
 
@@ -36,8 +33,11 @@ Treeptr newTree(){
 SarkiPtr search(SarkiPtr sarki,int sarkiId){
     if(sarki==NULL)
         return NULL;
-    if(sarki->sarkiId==sarkiId)
-        return sarki->sarkiAdi;
+    if(sarki->sarkiId==sarkiId){
+        printf("\nSarki Adi: %s",sarki->sarkiAdi);
+        printf("Sanatci Adi: %s\n",sarki->sanatciAdi);
+        return sarki;
+        }
     else
         if(sarki->sarkiId>sarkiId)
             return search(sarki->left,sarkiId);
@@ -45,7 +45,7 @@ SarkiPtr search(SarkiPtr sarki,int sarkiId){
             return search(sarki->right,sarkiId);
 }
 
-void AddTree(Treeptr tree,SarkiPtr sarki){
+void AddTree(Treeptr tree,SarkiPtr sarki){   
     SarkiPtr temp = NULL;
     SarkiPtr s = tree->root;
     while(s!=NULL)
@@ -68,11 +68,8 @@ void AddTree(Treeptr tree,SarkiPtr sarki){
     }
 }
 
-
-
 void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
     
-    // Dosyaya da ekleyelim
     FILE *dosya = fopen("sarki.txt", "ab+");
     if (dosya == NULL)
     {
@@ -100,23 +97,18 @@ void sarkiSil(int sarkiId) {
         return;
     }
 
-    // Silinecek düğümün aranması
     while (temp != NULL && temp->sarkiId != sarkiId) {
         onceki = temp;
         temp = temp->next;
         sayac++;
     }
 
-    // Eğer şarkı bulunamazsa
     if (temp == NULL) {
         printf("Sarki bulunamadi: %d\n", sarkiId);
         return;
     }
 
-    // Düğüm listeden çıkarılır
     onceki->next = temp->next;
-
-
 
     free(temp);
     printf("Sarki silindi: %d\n", sarkiId);
@@ -137,14 +129,14 @@ void sarkiGuncelle(int sarkiId, char yeniSarkiAdi[], char yeniSanatciAdi[]) {
 
     printf("Sarki bulunamadi: ID=%d\n", sarkiId);
 }
-// Yeni bir şarkıyı bağlı listeye ekler
-void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId)
+
+void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,Treeptr tree1)
 {
     SarkiPtr yeniSarki = (SarkiPtr)malloc(sizeof(Sarki));
     yeniSarki->sarkiId=sarkiId;
     strcpy(yeniSarki->sarkiAdi, sarkiAdi);
     strcpy(yeniSarki->sanatciAdi, sanatciAdi);
-
+    
     yeniSarki->next = NULL;
 
     if (sarkiBaslangic == NULL)
@@ -160,10 +152,10 @@ void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId)
         }
         temp->next = yeniSarki;
     }
+    
+    AddTree(tree1,yeniSarki);
 }
 
-
-// Şarkıları listeler
 void sarkilariListele()
 {
     SarkiPtr temp = sarkiBaslangic;
@@ -184,8 +176,7 @@ void dosyaListele(){
     }
 }
 
-// Şarkı işlemlerini gerçekleştirir
-void sarkiIslem(int sarkiId)
+void sarkiIslem(int sarkiId,Treeptr tree1)
 {
     int islem;
     char sarkiAdi[MAX_SIZE];
@@ -202,9 +193,10 @@ void sarkiIslem(int sarkiId)
         printf("2 - Sarkilari Listeleme\n");
         printf("3 - Sarki Sil\n");
         printf("4 - Sarki Guncelle\n");
-        printf("5 - Cikis\n");
+        printf("5 - Sarki Arama\n");
+        printf("6 - Cikis\n");
         scanf("%d", &islem);
-        getchar(); // Önceki scanf'den kalan newline karakterini al
+        getchar();
 
         switch (islem)
         {
@@ -213,7 +205,8 @@ void sarkiIslem(int sarkiId)
             fgets(sarkiAdi, MAX_SIZE, stdin);
             printf("Sanatcisini girin:");
             fgets(sanatciAdi, MAX_SIZE, stdin);
-            sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++);
+            sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++,tree1);
+
             printf("Sarki eklendi.\n");
             break;
         case 2:
@@ -236,6 +229,11 @@ void sarkiIslem(int sarkiId)
             printf("Guncellendi.\n");
             break;
         case 5:
+            printf("Aramak istediginiz sarkinin Id'sini giriniz:");
+            scanf("%d",&sarkiId);
+            getchar();
+            search(tree1->root,sarkiId);
+        case 6:
             dosyaSil = fopen("sarki.txt","w");
             fclose(dosyaSil);
             dosyaListele();
@@ -245,16 +243,15 @@ void sarkiIslem(int sarkiId)
             printf("Gecersiz islem!\n");
             break;
         }
-    } while (islem != 5);
+    } while (islem != 6);
 }
-
 
 int main()
 {
+    Treeptr tree1= newTree();
     int sarkiId=1;
     FILE *sarkiDosya;
 
-    // Dosyaları aç
     sarkiDosya = fopen("sarki.txt", "a+");
     if (sarkiDosya == NULL)
     {
@@ -262,27 +259,15 @@ int main()
         exit(1);
     }
 
-    // Dosyalardan şarkıları ve sanatçıları oku
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
     while (fgets(sarkiAdi, MAX_SIZE, sarkiDosya) != NULL && fgets(sanatciAdi, MAX_SIZE, sarkiDosya) != NULL)
     {       
-        sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++);
+        sarkiEkle(sarkiAdi, sanatciAdi, sarkiId++,tree1);
     }
 
-    sarkiIslem(sarkiId);
+    sarkiIslem(sarkiId,tree1);
 
-    Treeptr tree1= newTree();
-
-    
-
-
-
-
-
-
-
-    // Dosyaları kapat
     fclose(sarkiDosya);
 
     return 0;
