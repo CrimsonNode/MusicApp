@@ -4,8 +4,6 @@
 
 #define MAX_SIZE 100
 
-
-
 // Şarkı yapısı
 struct Sarki
 {
@@ -13,12 +11,63 @@ struct Sarki
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
     struct Sarki *next;
+    struct Sarki* right;
+    struct Sarki* left;
 };
 
 typedef struct Sarki Sarki;
 typedef Sarki *SarkiPtr;
 
 SarkiPtr sarkiBaslangic = NULL;
+
+struct Tree{
+    SarkiPtr root;
+};
+
+typedef struct Tree Tree;
+typedef Tree* Treeptr;
+
+Treeptr newTree(){
+    Treeptr newTree=(Treeptr)malloc(sizeof(Tree));
+    newTree->root=NULL;
+    return newTree;
+}
+
+SarkiPtr search(SarkiPtr sarki,int sarkiId){
+    if(sarki==NULL)
+        return NULL;
+    if(sarki->sarkiId==sarkiId)
+        return sarki->sarkiAdi;
+    else
+        if(sarki->sarkiId>sarkiId)
+            return search(sarki->left,sarkiId);
+        else
+            return search(sarki->right,sarkiId);
+}
+
+void AddTree(Treeptr tree,SarkiPtr sarki){
+    SarkiPtr temp = NULL;
+    SarkiPtr s = tree->root;
+    while(s!=NULL)
+    {
+        temp=s;
+        if(sarki->sarkiId < s->sarkiId) 
+            s=s->left;
+        else    
+            s=s->right;
+    }
+    if(temp==NULL)
+    {
+        tree->root = sarki;
+    }
+    else{
+        if(sarki->sarkiId < temp->sarkiId)
+            temp->left=sarki;
+        else    
+            temp->right=sarki;
+    }
+}
+
 
 
 void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
@@ -222,6 +271,16 @@ int main()
     }
 
     sarkiIslem(sarkiId);
+
+    Treeptr tree1= newTree();
+
+    
+
+
+
+
+
+
 
     // Dosyaları kapat
     fclose(sarkiDosya);
