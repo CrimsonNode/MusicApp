@@ -1,0 +1,122 @@
+-----------------------1. “Height” Fonskiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon AVL ağacının yüksekliğini hesaplar. Her düğüm için rekürsif olarak sol ve sağ alt ağaçların yüksekliğini hesaplar.
+En kötü durumda her düğüm üzerinde işlem yapılır.
+AVL ağacının dengeli olduğunu varsayarsak, ağacın yüksekliği O(log n) olur.
+
+Her düğüm üzerinde işlem yapılır, bu nedenle toplam zaman karmaşıklığı: O(n)
+
+Alan Karmaşıklığı:
+Rekürsif çağrılar stack hafızasında yer kaplar. En derin rekürsif çağrı ağacın yüksekliği kadar olur.
+Rekürsif derinlik: O(log n).
+
+Bu nedenle alan karmaşıklığı: O(log n)
+
+-----------------------2. “insertAVL” Fonksiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon AVL ağacına eleman ekler ve dengeyi korur.
+Bir düğüm ekleme işlemi O(log n) sürede yapılır.
+Her eklemede maksimum 2 rotasyon yapılabilir, her biri O(1) sürede tamamlanır.
+
+Dolayısıyla toplam zaman karmaşıklığı: O(log n)
+
+***Alan Karmaşıklığı***
+Rekürsif derinlik yine ağacın yüksekliği kadar olur.
+
+Bu nedenle alan karmaşıklığı: O(log n)
+
+-----------------------3. “enqueue” ve “dequeue” Fonksiyonlari-----------------------
+
+
+***Zaman Karmaşıklığı***
+Bu fonksiyonlar sabit süreli işlemler yapar.
+Eleman ekleme (enqueue) ve çıkarma (dequeue) O(1) sürede tamamlanır.
+
+Dolayısıyla zaman karmaşıklığı: O(1)
+
+***Alan Karmaşıklığı***
+Alan karmaşıklığı, kuyruk için ayrılmış sabit bir dizi olduğu için O(1)'dir.
+
+
+-----------------------4. “Search” Fonksiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon AVL ağacında arama yapar. Dengeli AVL ağacında arama işlemi O(log n) sürede tamamlanır.
+
+Dolayısıyla zaman karmaşıklığı: O(log n)
+
+***Alan Karmaşıklığı***
+Rekürsif derinlik yine ağacın yüksekliği kadar olur.
+
+Dolayısıyla alan karmaşıklığı: O(log n)
+
+-----------------------5. sarkiEkle Fonksiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon iki temel işlem yapar:
+
+1-)Listeye ekleme: Listenin sonuna kadar gitmek gerekir, bu O(n) zaman alır.
+2-)AVL ağacına ekleme: Bu işlem O(log n) zaman alır.
+
+Toplam zaman karmaşıklığı: O(n + log n)'dir. Ancak O(n) terimi daha baskın olduğu için zaman karmaşıklığı: O(n)
+
+***Alan Karmaşıklığı***
+Yeni bir Sarki düğümü oluşturulur ve hafızada yer kaplar.
+
+Bu nedenle, her ekleme işlemi için alan karmaşıklığı: O(1)
+
+-----------------------6. sarkiSil Fonksiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon, verilen sarkiIdyi bulmak için listeyi tarar ve bulursa şarkıyı siler.
+En kötü durumda listeyi sonuna kadar tarar, bu O(n) zaman alır.
+
+Dolayısıyla zaman karmaşıklığı: O(n)
+
+***Alan Karmaşıklığı***
+Listeyi dolaşmak için ekstra hafıza gerektirmez, bu nedenle alan karmaşıklığı: O(1)
+
+-----------------------7. sarkiGuncelle Fonksiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon, verilen sarkiIdyi bulmak ve güncellemek için listeyi tarar.
+En kötü durumda listeyi sonuna kadar tarar, bu O(n) zaman alır.
+
+Dolayısıyla zaman karmaşıklığı: O(n)
+
+***Alan Karmaşıklığı***
+Listeyi dolaşmak için ekstra hafıza gerektirmez, bu nedenle alan karmaşıklığı: O(1)
+
+-----------------------8. undoLastAction Fonksiyonu-----------------------
+
+***Zaman Karmaşıklığı***
+Bu fonksiyon, kuyruktan son işlemi çıkarır ve geri alır. Geri alma işlemi, ekleme veya silme işlemine bağlı olarak değişir:
+1-)Kuyruktan eleman çıkarmak O(1) sürede tamamlanır.
+2-)Silme ve ekleme işlemleri O(n) sürede yapılır.
+
+Dolayısıyla toplam zaman karmaşıklığı: O(n)
+
+***Alan Karmaşıklığı***
+İşlemleri geri almak için ekstra veri yapıları (kuyruk ve yığın) kullanılır, ancak bu sabit miktarda hafıza kullanır.
+
+Bu nedenle alan karmaşıklığı: O(1)
+
+------------------------------Algoritma Analizi Gerekmeyen Fonksiyonlar------------------------------
+
+newList, newStack, newTree, newQueue: Bu fonksiyonlar sadece yeni veri yapıları oluşturur ve sabit miktarda iş yaparlar. Genellikle O(1) zaman ve alan karmaşıklığına sahiptirler, bu yüzden detaylı analiz gerektirmezler.
+
+rotateRight ve rotateLeft: AVL ağacını dengelemek için yapılan bu rotasyon işlemleri sabit sürede çalışır (O(1)). Bu yüzden detaylı analiz gerektirmezler.
+
+dosyayaYaz: Bu fonksiyon, bir dosyaya yazma işlemi yapar ve genellikle dosya işlemlerinin zaman karmaşıklığı dosyanın boyutuna bağlıdır. Ancak bu fonksiyon tipik olarak dosya işlemlerinin zaman karmaşıklığını etkilemez.
+
+AddTree: Bir ağaca eleman eklerken, sadece ağaç yapısını değiştirir. Ancak AVL dengesi dışında ek bir karmaşıklık getirmez.
+
+sarkilariListele ve dosyaListele: Bu fonksiyonlar listeyi dolaşır ve elemanları yazdırır. Bu işlemler genellikle O(n) zaman karmaşıklığına sahiptir, ancak çoğunlukla sadece veri çıktısı ile ilgilidir.
+
+isFull ve isEmpty: Yığıtın dolu veya boş olup olmadığını kontrol eder. Bu işlemler sabit sürede çalışır (O(1)) ve analiz gerektirmez.
+
+pushStack ve pop: Yığıta eleman ekleme ve yığıttan eleman çıkarma işlemleri sabit sürede çalışır (O(1)) ve analiz gerektirmez.
+
+islemYazdir: Kuyruktaki işlemleri yazdırır. Kuyruk işlemlerinin analizinden ziyade, yazdırma işlemi basit bir O(n) işlemdir.

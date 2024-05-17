@@ -30,8 +30,7 @@ Dosya İsmi: music_app
 
 #define MAX_SIZE 100
 
-struct Sarki
-{
+struct Sarki{
     int sarkiId;
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
@@ -81,26 +80,26 @@ struct Stack {
 typedef struct Stack Stack;
 typedef Stack *StackPtr;
 
-ListPtr newList(){
+ListPtr newList(){      // Zaman Karmaşıklığı: O(1) - Alan Karmaşıklığı: O(1)
     ListPtr list = (ListPtr)malloc(sizeof(List));
     list->bas=NULL;
     list->son=NULL;
     return list;
 }
 
-StackPtr newStack(){
+StackPtr newStack(){        // Zaman Karmaşıklığı: O(1) - Alan Karmaşıklığı: O(1)
     StackPtr yeniStack = (StackPtr)malloc(sizeof(Stack));
     yeniStack->bas=-1;
     return yeniStack;
 }
 
-TreePtr newTree(){
+TreePtr newTree(){      // Zaman Karmaşıklığı: O(1) - Alan Karmaşıklığı: O(1)
     TreePtr newTree=(TreePtr)malloc(sizeof(Tree));
     newTree->root=NULL;
     return newTree;
 }
 
-QueuePtr newQueue(){
+QueuePtr newQueue(){        // Zaman Karmaşıklığı: O(1) - Alan Karmaşıklığı: O(1)
     QueuePtr q=(QueuePtr)malloc(sizeof(Queue));
     q->on=0;
     q->arka=-1;
@@ -108,7 +107,7 @@ QueuePtr newQueue(){
     return q;
 }
 
-int height(SarkiPtr node) {
+int height(SarkiPtr node) {             //Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(log n)
     if (node == NULL)
         return 0;
     int left_height = height(node->left);
@@ -122,7 +121,7 @@ int balanceFactor(SarkiPtr node) {
     return height(node->left) - height(node->right);
 }
 
-SarkiPtr rotateRight(SarkiPtr y) {
+SarkiPtr rotateRight(SarkiPtr y) {      // Zaman Karmaşıklığı: O(1)
     SarkiPtr x = y->left;
     SarkiPtr T2 = x->right;
 
@@ -132,7 +131,7 @@ SarkiPtr rotateRight(SarkiPtr y) {
     return x;
 }
 
-SarkiPtr rotateLeft(SarkiPtr x) {
+SarkiPtr rotateLeft(SarkiPtr x) {       // Zaman Karmaşıklığı: O(1)
     SarkiPtr y = x->right;
     SarkiPtr T2 = y->left;
 
@@ -142,7 +141,7 @@ SarkiPtr rotateLeft(SarkiPtr x) {
     return y;
 }
 
-SarkiPtr insertAVL(SarkiPtr node, SarkiPtr newSarki) {
+SarkiPtr insertAVL(SarkiPtr node, SarkiPtr newSarki) {      //Zaman Karmaşıklığı: O(log n) - Alan Karmaşıklığı: O(log n)
     if (node == NULL)
         return newSarki;
 
@@ -174,7 +173,7 @@ SarkiPtr insertAVL(SarkiPtr node, SarkiPtr newSarki) {
     return node;
 }
 
-void enqueue(QueuePtr q, int x) {
+void enqueue(QueuePtr q, int x) {    // Zaman Karmaşıklığı: O(1) - Alan Karmaşıklığı: O(1)
     if (q->boyut == 10) {        
         return;
     }
@@ -183,14 +182,14 @@ void enqueue(QueuePtr q, int x) {
     q->boyut++;
 }
 
-int dequeue(QueuePtr q) {
+int dequeue(QueuePtr q) {    // Zaman Karmaşıklığı: O(1) - Alan Karmaşıklığı: O(1)
     int x = q->dizi[q->on];
     q->on = (q->on + 1) % 10;
     q->boyut--;
     return x;
 }
 
-SarkiPtr search(SarkiPtr sarki,int sarkiId){
+SarkiPtr search(SarkiPtr sarki,int sarkiId){    // Zaman Karmaşıklığı: O(log n) - Alan Karmaşıklığı: O(log n)
     if(sarki==NULL)
         return NULL;
     if(sarki->sarkiId==sarkiId){
@@ -205,15 +204,15 @@ SarkiPtr search(SarkiPtr sarki,int sarkiId){
             return search(sarki->right,sarkiId);
 }
 
-int isFull(StackPtr stack){    
+int isFull(StackPtr stack){    // Zaman Karmaşıklığı: O(1)
     return stack->bas==9;
 }
 
-int isEmpty(StackPtr stack){
+int isEmpty(StackPtr stack){       // Zaman Karmaşıklığı: O(1)
     return stack->bas==-1;
 }
 
-void pushStack(StackPtr stack, Action action) {
+void pushStack(StackPtr stack, Action action) {     // Zaman Karmaşıklığı: O(1)
     if (stack->bas == 9) {
         printf("Stack dolu.");
         return;
@@ -221,7 +220,7 @@ void pushStack(StackPtr stack, Action action) {
     stack->dizi[++stack->bas] = action;
 }
 
-Action pop(StackPtr stack) {
+Action pop(StackPtr stack) {       // Zaman Karmaşıklığı: O(1)
     if (stack->bas == -1) {
         printf("Stack bos.");
         Action emptyAction = {0, {0, "", "", NULL, NULL, NULL}, 0};
@@ -265,7 +264,7 @@ void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
     fclose(dosya);
 }
 
-void sarkiSil(int sarkiId) {
+void sarkiSil(int sarkiId) {    // Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(1)
     if (sarkiBaslangic == NULL) {
         return;
     }
@@ -298,7 +297,7 @@ void sarkiSil(int sarkiId) {
     printf("Sarki silindi: %d\n", sarkiId);
 }
 
-void sarkiGuncelle(ListPtr list,int sarkiId, char yeniSarkiAdi[], char yeniSanatciAdi[]) {
+void sarkiGuncelle(ListPtr list,int sarkiId, char yeniSarkiAdi[], char yeniSanatciAdi[]) {      // Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(1)
     SarkiPtr temp = list->bas;
 
     while (temp != NULL) {
@@ -313,8 +312,7 @@ void sarkiGuncelle(ListPtr list,int sarkiId, char yeniSarkiAdi[], char yeniSanat
     printf("Sarki bulunamadi: ID=%d\n", sarkiId);
 }
 
-void sarkiEkle(ListPtr list,char sarkiAdi[], char sanatciAdi[], int sarkiId, TreePtr tree1)
-{
+void sarkiEkle(ListPtr list,char sarkiAdi[], char sanatciAdi[], int sarkiId, TreePtr tree1){    // Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(1)
     SarkiPtr yeniSarki = (SarkiPtr)malloc(sizeof(Sarki));
     yeniSarki->sarkiId=sarkiId;
     strcpy(yeniSarki->sarkiAdi, sarkiAdi);
@@ -342,8 +340,7 @@ void sarkiEkle(ListPtr list,char sarkiAdi[], char sanatciAdi[], int sarkiId, Tre
     tree1->root = insertAVL(tree1->root, yeniSarki);
 }
 
-void sarkilariListele(ListPtr list)
-{
+void sarkilariListele(ListPtr list){     // Zaman Karmaşıklığı: O(1)    
     SarkiPtr temp = list->bas;
     printf("\nSarkilar:\n");
     while (temp != NULL)
@@ -353,7 +350,7 @@ void sarkilariListele(ListPtr list)
     }
 }
 
-void dosyaListele(ListPtr list){
+void dosyaListele(ListPtr list){        // Zaman Karmaşıklığı: O(1)
     SarkiPtr temp = list->bas;
     while (temp != NULL)
     {
@@ -362,7 +359,7 @@ void dosyaListele(ListPtr list){
     }
 }
 
-void undoLastAction(ListPtr list,StackPtr stack, TreePtr tree) {
+void undoLastAction(ListPtr list,StackPtr stack, TreePtr tree) {    // Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(1)
     if (isEmpty(stack)) {
         printf("Geri alma islemi bulunmamaktadir.\n");
         return;
@@ -387,7 +384,7 @@ void undoLastAction(ListPtr list,StackPtr stack, TreePtr tree) {
     }
 }
 
-void islemYazdir(QueuePtr q){
+void islemYazdir(QueuePtr q){   // Zaman Karmaşıklığı: O(1)
     Queue tempQueue = *q;
     int count = 0;
     while (tempQueue.boyut > 0) {            
