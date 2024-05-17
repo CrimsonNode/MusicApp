@@ -18,7 +18,7 @@ struct Sarki
     int sarkiId;
     char sarkiAdi[MAX_SIZE];
     char sanatciAdi[MAX_SIZE];
-    struct Sarki *next;
+    struct Sarki* next;
     struct Sarki* right;
     struct Sarki* left;
 };
@@ -60,6 +60,72 @@ QueuePtr newQueue(){
     return q;
 }
 
+int height(SarkiPtr node) {
+    if (node == NULL)
+        return 0;
+    int left_height = height(node->left);
+    int right_height = height(node->right);
+    return 1 + (left_height > right_height ? left_height : right_height);
+}
+
+int balanceFactor(SarkiPtr node) {
+    if (node == NULL)
+        return 0;
+    return height(node->left) - height(node->right);
+}
+
+SarkiPtr rotateRight(SarkiPtr y) {
+    SarkiPtr x = y->left;
+    SarkiPtr T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+
+    return x;
+}
+
+SarkiPtr rotateLeft(SarkiPtr x) {
+    SarkiPtr y = x->right;
+    SarkiPtr T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    return y;
+}
+
+SarkiPtr insertAVL(SarkiPtr node, SarkiPtr newSarki) {
+    if (node == NULL)
+        return newSarki;
+
+    if (newSarki->sarkiId < node->sarkiId)
+        node->left = insertAVL(node->left, newSarki);
+    else if (newSarki->sarkiId > node->sarkiId)
+        node->right = insertAVL(node->right, newSarki);
+    else
+        return node;
+
+    int balance = balanceFactor(node);
+
+    if (balance > 1 && newSarki->sarkiId < node->left->sarkiId)
+        return rotateRight(node);
+
+    if (balance < -1 && newSarki->sarkiId > node->right->sarkiId)
+        return rotateLeft(node);
+
+    if (balance > 1 && newSarki->sarkiId > node->left->sarkiId) {
+        node->left = rotateLeft(node->left);
+        return rotateRight(node);
+    }
+
+    if (balance < -1 && newSarki->sarkiId < node->right->sarkiId) {
+        node->right = rotateRight(node->right);
+        return rotateLeft(node);
+    }
+
+    return node;
+}
+
 void enqueue(QueuePtr q, int x) {
     if (q->boyut == 10) {        
         return;
@@ -70,10 +136,6 @@ void enqueue(QueuePtr q, int x) {
 }
 
 int dequeue(QueuePtr q) {
-    if (q->boyut == 0) {
-        printf("Queue bos.\n");
-        return -1;
-    }
     int x = q->dizi[q->on];
     q->on = (q->on + 1) % 10;
     q->boyut--;
@@ -235,6 +297,7 @@ void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,TreePtr tree1)
     }
     
     AddTree(tree1,yeniSarki);
+    tree1->root = insertAVL(tree1->root, yeniSarki);
 }
 
 void sarkilariListele()
@@ -258,9 +321,10 @@ void dosyaListele(){
 }
 
 void islemYazdir(QueuePtr q){
+    Queue tempQueue = *q;
     int count = 0;
-    while (q->boyut != 0) {            
-        switch (dequeue(q))
+    while (tempQueue.boyut > 0) {            
+        switch (dequeue(&tempQueue))
             {
             case 1:
                 count++;
@@ -283,7 +347,7 @@ void islemYazdir(QueuePtr q){
                 printf("%d.Sarki Arama Islemi\n",count);
                 break;
             default:
-                printf("Gecersiz islem!\n",count);
+                printf("Gecersiz islem!\n");
                 break;
             }
     }

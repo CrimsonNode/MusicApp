@@ -1,5 +1,3 @@
-//BAĞLI LİSTE YAPISI DÜZENLENECEK
-//1 veya 2 VERİ YAPISI DAHA EKLENECEK
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -138,10 +136,6 @@ void enqueue(QueuePtr q, int x) {
 }
 
 int dequeue(QueuePtr q) {
-    if (q->boyut == 0) {
-        printf("Queue bos.\n");
-        return -1;
-    }
     int x = q->dizi[q->on];
     q->on = (q->on + 1) % 10;
     q->boyut--;
@@ -306,17 +300,15 @@ void sarkiEkle(char sarkiAdi[], char sanatciAdi[],int sarkiId,TreePtr tree1)
     tree1->root = insertAVL(tree1->root, yeniSarki);
 }
 
-void preorder(SarkiPtr root) {
-    if (root != NULL) {
-        printf("%d) %s - %s\n", root->sarkiId, root->sarkiAdi, root->sanatciAdi);
-        preorder(root->left);
-        preorder(root->right);
-    }
-}
-
-void sarkilariListele(TreePtr tree1) {
+void sarkilariListele()
+{
+    SarkiPtr temp = sarkiBaslangic;
     printf("\nSarkilar:\n");
-    preorder(tree1->root);
+    while (temp != NULL)
+    {
+        printf("%d) %s - %s\n", temp->sarkiId, temp->sarkiAdi, temp->sanatciAdi);
+        temp = temp->next;
+    }
 }
 
 void dosyaListele(){
@@ -329,9 +321,10 @@ void dosyaListele(){
 }
 
 void islemYazdir(QueuePtr q){
+    Queue tempQueue = *q;
     int count = 0;
-    while (q->boyut != 0) {            
-        switch (dequeue(q))
+    while (tempQueue.boyut > 0) {            
+        switch (dequeue(&tempQueue))
             {
             case 1:
                 count++;
@@ -354,7 +347,7 @@ void islemYazdir(QueuePtr q){
                 printf("%d.Sarki Arama Islemi\n",count);
                 break;
             default:
-                printf("Gecersiz islem!\n",count);
+                printf("Gecersiz islem!\n");
                 break;
             }
     }
@@ -396,7 +389,7 @@ void sarkiIslem(int sarkiId,TreePtr tree1,QueuePtr q1)
             enqueue(q1,1);
             break;
         case 2:
-            sarkilariListele(tree1);
+            sarkilariListele();
             enqueue(q1,2);
             break;
         case 3:
