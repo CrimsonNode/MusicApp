@@ -2,3 +2,5 @@ bir
 birr
 iki
 ikii
+ahmet
+mehmet
