@@ -267,7 +267,6 @@ void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
 
 void sarkiSil(int sarkiId) {
     if (sarkiBaslangic == NULL) {
-        printf("Liste bos.\n");
         return;
     }
 
