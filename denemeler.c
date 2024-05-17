@@ -1,3 +1,29 @@
+/*
+Proje
+Müzik Yönetim Sistemi
+
+Ogrenci1 No: 032290083
+Ogrenci1 İsmi: Fatih Efe Aydoğan
+
+Ogrenci2 No: 032290062
+Ogrenci2 İsmi: Emir Uçar
+
+Ogrenci3 No: 032290005
+Ogrenci3 İsmi: Berke Kadir Çelik
+
+Ogrenci4 No: 032290072
+Ogrenci4 İsmi: Halil Çiftçi
+
+Ogrenci5 No: 032190102
+Ogrenci5 İsmi: Fatos Kamberi
+
+Ogrenci6 No: 032290043
+Ogrenci6 İsmi: Eren Eryılmaz
+
+Ders Kodu: BMB2006
+
+Dosya İsmi: music_app
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +43,7 @@ typedef struct Sarki Sarki;
 typedef Sarki *SarkiPtr;
 
 SarkiPtr sarkiBaslangic = NULL;
+
 
 struct Queue{
     int dizi[10];
@@ -150,12 +177,6 @@ int dequeue(QueuePtr q) {
     return x;
 }
 
-void initialize(QueuePtr q){
-    q->on=0;
-    q->arka=-1;
-    q->boyut=0;
-}
-
 SarkiPtr search(SarkiPtr sarki,int sarkiId){
     if(sarki==NULL)
         return NULL;
@@ -196,28 +217,29 @@ Action pop(StackPtr stack) {
     return stack->dizi[stack->bas--];
 }
 
-void AddTree(TreePtr tree,SarkiPtr sarki){   
+void AddTree(TreePtr tree, SarkiPtr sarki) {
     SarkiPtr temp = NULL;
-    SarkiPtr s = tree->root;
-    while(s!=NULL)
-    {
-        temp=s;
-        if(sarki->sarkiId < s->sarkiId) 
-            s=s->left;
-        else    
-            s=s->right;
+    SarkiPtr current = tree->root;
+    
+    while (current != NULL) {
+        temp = current;
+        if (sarki->sarkiId < current->sarkiId)
+            current = current->left;
+        else if (sarki->sarkiId > current->sarkiId)
+            current = current->right;
+        else
+            return;
     }
-    if(temp==NULL)
-    {
+    
+    if (temp == NULL) {
         tree->root = sarki;
-    }
-    else{
-        if(sarki->sarkiId < temp->sarkiId)
-            temp->left=sarki;
-        else    
-            temp->right=sarki;
+    } else if (sarki->sarkiId < temp->sarkiId) {
+        temp->left = sarki;
+    } else {
+        temp->right = sarki;
     }
 }
+
 
 void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
     
@@ -239,11 +261,11 @@ void sarkiSil(int sarkiId) {
 
     SarkiPtr temp = sarkiBaslangic;
     SarkiPtr onceki = NULL;
-    int sayac = 0;
     
     if (temp != NULL && temp->sarkiId == sarkiId) {
         sarkiBaslangic = temp->next;
         free(temp);
+        temp = NULL;
         printf("Sarki silindi: %d\n", sarkiId);
         return;
     }
@@ -251,7 +273,6 @@ void sarkiSil(int sarkiId) {
     while (temp != NULL && temp->sarkiId != sarkiId) {
         onceki = temp;
         temp = temp->next;
-        sayac++;
     }
 
     if (temp == NULL) {
@@ -262,6 +283,7 @@ void sarkiSil(int sarkiId) {
     onceki->next = temp->next;
 
     free(temp);
+    temp = NULL;
     printf("Sarki silindi: %d\n", sarkiId);
 }
 
@@ -336,15 +358,15 @@ void undoLastAction(StackPtr stack, TreePtr tree) {
     }
     Action lastAction = pop(stack);
     switch (lastAction.actionType) {
-        case 1: // Undo Add
+        case 1: 
             sarkiSil(lastAction.songData.sarkiId);
             printf("Sarki ekleme islemi geri alindi: %d\n", lastAction.songData.sarkiId);
             break;
-        case 2: // Undo Delete
+        case 2: 
             sarkiEkle(lastAction.songData.sarkiAdi, lastAction.songData.sanatciAdi, lastAction.songData.sarkiId, tree);
             printf("Sarki silme islemi geri alindi: %d\n", lastAction.songData.sarkiId);
             break;
-        case 3: // Undo Update
+        case 3: 
             sarkiGuncelle(lastAction.sarkiId, lastAction.songData.sarkiAdi, lastAction.songData.sanatciAdi);
             printf("Sarki guncelleme islemi geri alindi: %d\n", lastAction.sarkiId);
             break;
@@ -423,7 +445,6 @@ void sarkiIslem(int sarkiId, TreePtr tree1, QueuePtr q1, StackPtr stack1) {
                 sarkiEkle(sarkiAdi, sanatciAdi, sarkiId, tree1);
                 printf("Sarki eklendi.\n");
 
-                // Prepare action for undo
                 action.actionType = 1;
                 action.songData.sarkiId = sarkiId;
                 strcpy(action.songData.sarkiAdi, sarkiAdi);
@@ -443,7 +464,6 @@ void sarkiIslem(int sarkiId, TreePtr tree1, QueuePtr q1, StackPtr stack1) {
                 searchedSong = search(tree1->root, silId);
 
                 if (searchedSong) {
-                    // Prepare action for undo
                     action.actionType = 2;
                     action.songData = *searchedSong;
                     pushStack(stack1, action);
@@ -465,7 +485,6 @@ void sarkiIslem(int sarkiId, TreePtr tree1, QueuePtr q1, StackPtr stack1) {
                 searchedSong = search(tree1->root, guncelleId);
                 
                 if (searchedSong) {
-                    // Prepare action for undo
                     action.actionType = 3;
                     action.sarkiId = guncelleId;
                     action.songData = *searchedSong;
