@@ -41,8 +41,6 @@ struct Sarki{
 typedef struct Sarki Sarki;
 typedef Sarki* SarkiPtr;
 
-SarkiPtr sarkiBaslangic = NULL;
-
 struct List {
     SarkiPtr bas;
     SarkiPtr son;
@@ -264,16 +262,16 @@ void dosyayaYaz(char sarkiAdi[], char sanatciAdi[]){
     fclose(dosya);
 }
 
-void sarkiSil(int sarkiId) {    // Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(1)
-    if (sarkiBaslangic == NULL) {
+void sarkiSil(int sarkiId, ListPtr list) {    // Zaman Karmaşıklığı: O(n) - Alan Karmaşıklığı: O(1)
+    if (list->bas == NULL) {
         return;
     }
 
-    SarkiPtr temp = sarkiBaslangic;
+    SarkiPtr temp = list->bas;
     SarkiPtr onceki = NULL;
     
     if (temp != NULL && temp->sarkiId == sarkiId) {
-        sarkiBaslangic = temp->next;
+        list->bas = temp->next;
         free(temp);
         temp = NULL;
         printf("Sarki silindi: %d\n", sarkiId);
@@ -334,6 +332,7 @@ void sarkiEkle(ListPtr list,char sarkiAdi[], char sanatciAdi[], int sarkiId, Tre
             temp = temp->next;
         }
         temp->next = yeniSarki;
+        list->son = yeniSarki;
     }
     
     AddTree(tree1,yeniSarki);
@@ -367,7 +366,7 @@ void undoLastAction(ListPtr list,StackPtr stack, TreePtr tree) {    // Zaman Kar
     Action lastAction = pop(stack);
     switch (lastAction.actionType) {
         case 1: 
-            sarkiSil(lastAction.songData.sarkiId);
+            sarkiSil(lastAction.songData.sarkiId, list);
             printf("Sarki ekleme islemi geri alindi: %d\n", lastAction.songData.sarkiId);
             break;
         case 2: 
@@ -476,7 +475,7 @@ void sarkiIslem(ListPtr list,int sarkiId, TreePtr tree1, QueuePtr q1, StackPtr s
                     action.songData = *searchedSong;
                     pushStack(stack1, action);
                     
-                    sarkiSil(silId);
+                    sarkiSil(silId, list);
                     printf("Sarki silindi.\n");
                 }
                 enqueue(q1, 3);
