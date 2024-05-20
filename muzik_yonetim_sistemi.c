@@ -437,6 +437,7 @@ void sarkiIslem(ListPtr list,int sarkiId, TreePtr tree1, QueuePtr q1, StackPtr s
         printf("6 - Islem Listesi\n");
         printf("7 - Geri Al\n");
         printf("8 - Cikis\n");
+        printf("Girişiniz: ");
         scanf("%d", &islem);
         getchar();
 
